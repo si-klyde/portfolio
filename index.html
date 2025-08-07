@@ -12,6 +12,13 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle">
+        <div class="theme-icon">
+            <div class="sun-icon">☀</div>
+            <div class="moon-icon">🌙</div>
+        </div>
+    </button>
+    
     <nav class="navigation">
         <div class="nav-container">
             <a href="#about" class="nav-item active">About</a>
@@ -29,7 +36,7 @@
                     <img src="assets/profile.jpg" alt="Clyde Baclao Profile" class="profile-image" onerror="this.src='https://via.placeholder.com/64x64/888888/ffffff?text=C'">
                     <div class="profile-content">
                         <h1 class="profile-name" id="scramble-text">Collide</h1>
-                        <p class="profile-title">Software Developer & Creative</p>
+                        <p class="profile-title">Software Engineer & Cloud Administrator</p>
                     </div>
                 </div>
                 
@@ -463,6 +470,130 @@
                     navigateToSection(sections[prevIndex]);
                 }
             });
+
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            
+            // Set initial theme
+            if (currentTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+
+            // Animate theme toggle icons
+            function updateThemeIcons(theme) {
+                const sunIcon = themeToggle.querySelector('.sun-icon');
+                const moonIcon = themeToggle.querySelector('.moon-icon');
+                
+                if (theme === 'light') {
+                    gsap.to(sunIcon, { opacity: 1, rotation: 0, scale: 1, duration: 0.3, ease: "back.out(1.2)" });
+                    gsap.to(moonIcon, { opacity: 0, rotation: -180, scale: 0, duration: 0.3, ease: "back.in(1.2)" });
+                } else {
+                    gsap.to(moonIcon, { opacity: 1, rotation: 0, scale: 1, duration: 0.3, ease: "back.out(1.2)" });
+                    gsap.to(sunIcon, { opacity: 0, rotation: 180, scale: 0, duration: 0.3, ease: "back.in(1.2)" });
+                }
+            }
+
+            // Set initial icon state
+            updateThemeIcons(currentTheme);
+
+            // Modern theme switching function
+            function switchTheme(newTheme) {
+                localStorage.setItem('theme', newTheme);
+            }
+
+            // Theme transition animation function
+            function animateThemeTransition(newTheme) {
+                const toggleBtn = themeToggle;
+                const toggleRect = toggleBtn.getBoundingClientRect();
+                // Get center position relative to viewport (since mask is fixed positioned)
+                const toggleCenterX = toggleRect.left + toggleRect.width / 2;
+                const toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                
+                // Set CSS custom properties for mask position
+                const xPercent = (toggleCenterX / window.innerWidth) * 100;
+                const yPercent = (toggleCenterY / window.innerHeight) * 100;
+                document.documentElement.style.setProperty('--toggle-x', `${xPercent}%`);
+                document.documentElement.style.setProperty('--toggle-y', `${yPercent}%`);
+                
+                // Use View Transition API if available
+                if (document.startViewTransition) {
+                    document.startViewTransition(() => switchTheme(newTheme));
+                } else {
+                    // Fallback for browsers without View Transition API
+                    fallbackThemeTransition(newTheme, toggleCenterX, toggleCenterY);
+                }
+            }
+
+            // Fallback transition for older browsers
+            function fallbackThemeTransition(newTheme, centerX, centerY) {
+                console.log(`Theme transition from toggle at: ${centerX}, ${centerY}`);
+                
+                // Calculate max distance from center to any corner for full coverage
+                const maxDistance = Math.sqrt(
+                    Math.pow(Math.max(centerX, window.innerWidth - centerX), 2) +
+                    Math.pow(Math.max(centerY, window.innerHeight - centerY), 2)
+                );
+                
+                // Create the transition mask that reveals new theme
+                const transitionMask = document.createElement('div');
+                transitionMask.className = 'theme-transition-mask';
+                transitionMask.setAttribute('data-theme', newTheme);
+                
+                // Style the mask with explicit colors for each theme
+                const newThemeColors = newTheme === 'dark' ? {
+                    bg: '#0e0e0e'
+                } : {
+                    bg: '#ffffff'
+                };
+                
+                transitionMask.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    z-index: 10000;
+                    pointer-events: none;
+                    background: ${newThemeColors.bg};
+                    clip-path: circle(20px at ${centerX}px ${centerY}px);
+                    overflow: hidden;
+                `;
+                
+                document.body.appendChild(transitionMask);
+                
+                // Start with theme already switched in the background
+                document.documentElement.setAttribute('data-theme', newTheme);
+                
+                // Create the expanding animation with GSAP
+                gsap.to(transitionMask, {
+                    clipPath: `circle(${maxDistance * 1.2}px at ${centerX}px ${centerY}px)`,
+                    duration: 1,
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        // Store theme in localStorage
+                        switchTheme(newTheme);
+                        
+                        // Clean up the transition mask
+                        if (document.body.contains(transitionMask)) {
+                            document.body.removeChild(transitionMask);
+                        }
+                    }
+                });
+            }
+
+            // Theme toggle click handler
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                // Update icons immediately
+                updateThemeIcons(newTheme);
+                
+                // Start theme transition
+                animateThemeTransition(newTheme);
+            });
+
         });
     </script>
 </body>
