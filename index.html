@@ -385,7 +385,7 @@
                 // Slide out current section and slide in target section simultaneously
                 transitionTl.to(currentSectionEl, {
                     x: -slideDirection * window.innerWidth,
-                    duration: 0.6,
+                    duration: 0.7,
                     ease: "power2.inOut",
                     onComplete: () => {
                         gsap.set(currentSectionEl, { display: "none", x: 0 });
@@ -393,8 +393,8 @@
                 })
                 .to(targetSectionEl, {
                     x: 0,
-                    duration: 0.6,
-                    ease: "power2.inOut"
+                    duration: 0.7,
+                    ease: "back.out(1)"
                 }, 0) // Start at the same time as current section slide out
 
                 // Animate section-specific content with horizontal entrance
