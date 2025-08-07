@@ -394,46 +394,42 @@
                 .to(targetSectionEl, {
                     x: 0,
                     duration: 0.7,
-                    ease: "back.out(1)"
+                    ease: "back.out(0.5)"
                 }, 0) // Start at the same time as current section slide out
 
-                // Animate section-specific content with horizontal entrance
+                // Animate section-specific content with fade-in only
                 if (targetSection === 'skills') {
-                    transitionTl.set(".skill-category", { x: 50, opacity: 0 })
+                    transitionTl.set(".skill-category", { opacity: 0 })
                     .to(".skill-category", {
                         opacity: 1,
-                        x: 0,
-                        duration: 0.5,
+                        duration: 0.4,
                         stagger: 0.1,
-                        ease: "back.out(1.1)"
-                    }, "-=0.2");
+                        ease: "power2.out"
+                    }, "-=0.1");
                 } else if (targetSection === 'work') {
-                    transitionTl.set(".project-card", { x: 40, opacity: 0 })
+                    transitionTl.set(".project-card", { opacity: 0 })
                     .to(".project-card", {
                         opacity: 1,
-                        x: 0,
-                        duration: 0.5,
+                        duration: 0.4,
                         stagger: 0.15,
-                        ease: "back.out(1.1)"
-                    }, "-=0.2");
+                        ease: "power2.out"
+                    }, "-=0.1");
                 } else if (targetSection === 'contact') {
-                    transitionTl.set(".contact-method", { x: 30, opacity: 0 })
+                    transitionTl.set(".contact-method", { opacity: 0 })
                     .to(".contact-method", {
                         opacity: 1,
-                        x: 0,
-                        duration: 0.5,
+                        duration: 0.4,
                         stagger: 0.1,
-                        ease: "back.out(1.1)"
-                    }, "-=0.2");
+                        ease: "power2.out"
+                    }, "-=0.1");
                 } else if (targetSection === 'blog') {
-                    transitionTl.set(".article-card", { x: 40, opacity: 0 })
+                    transitionTl.set(".article-card", { opacity: 0 })
                     .to(".article-card", {
                         opacity: 1,
-                        x: 0,
-                        duration: 0.5,
+                        duration: 0.4,
                         stagger: 0.15,
-                        ease: "back.out(1.1)"
-                    }, "-=0.2");
+                        ease: "power2.out"
+                    }, "-=0.1");
                 }
 
                 // Re-animate scramble text when returning to about section
