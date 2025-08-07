@@ -26,7 +26,7 @@
         <section class="about-section" id="about">
             <div class="section-content">
                 <div class="profile-container">
-                    <img src="https://via.placeholder.com/64x64/888888/ffffff?text=C" alt="Profile" class="profile-image">
+                    <img src="assets/profile.jpg" alt="Clyde Baclao Profile" class="profile-image" onerror="this.src='https://via.placeholder.com/64x64/888888/ffffff?text=C'">
                     <div class="profile-content">
                         <h1 class="profile-name" id="scramble-text">Collide</h1>
                         <p class="profile-title">Software Developer & Creative</p>
@@ -232,35 +232,43 @@
 
     <script>
         // Scramble text effect function
-        function scrambleText(selector, finalText) {
+        function scrambleText(selector, finalText, delay = 600) {
             const element = document.querySelector(selector);
-            const startText = "Collide";
-            const chars = "!@#$%^&*()_+-=[]{}|;:,.<>?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            const currentText = element.textContent;
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             let frame = 0;
-            const maxFrames = 40; // Increased for longer animation
+            const maxFrames = 35;
             
-            // Text is already "Collide" in HTML
-            
-            // Wait a moment before starting scramble
             setTimeout(() => {
                 const scrambleInterval = setInterval(() => {
                     let scrambled = "";
+                    const progress = frame / maxFrames;
                     
-                    // Create scrambled text that gradually resolves to final text
-                    for (let i = 0; i < Math.max(startText.length, finalText.length); i++) {
-                        if (i >= finalText.length) {
-                            // Characters being removed (for shortening Collide -> Clyde)
-                            if (frame > (i * 2) + 10) {
-                                scrambled += ""; // Remove character
+                    // Handle shrinking text (from long to short)
+                    if (finalText.length < currentText.length) {
+                        const currentLength = Math.floor(currentText.length - ((currentText.length - finalText.length) * Math.min(progress * 1.2, 1)));
+                        
+                        for (let i = 0; i < currentLength; i++) {
+                            const charResolvePoint = (i * 2) + 3;
+                            
+                            if (frame > charResolvePoint) {
+                                scrambled += finalText[i] || "";
                             } else {
                                 scrambled += chars[Math.floor(Math.random() * chars.length)];
                             }
-                        } else if (frame > (i * 2) + 5) {
-                            // Character is resolved
-                            scrambled += finalText[i];
-                        } else {
-                            // Character is still scrambling
-                            scrambled += chars[Math.floor(Math.random() * chars.length)];
+                        }
+                    } else {
+                        // Handle growing text (from short to long)
+                        const currentLength = Math.floor(currentText.length + ((finalText.length - currentText.length) * Math.min(progress * 1.5, 1)));
+                        
+                        for (let i = 0; i < currentLength; i++) {
+                            const charResolvePoint = (i * 2) + 3;
+                            
+                            if (frame > charResolvePoint) {
+                                scrambled += finalText[i] || "";
+                            } else {
+                                scrambled += chars[Math.floor(Math.random() * chars.length)];
+                            }
                         }
                     }
                     
@@ -271,8 +279,8 @@
                         clearInterval(scrambleInterval);
                         element.textContent = finalText;
                     }
-                }, 80);
-            }, 800); // Wait 800ms before starting scramble
+                }, 50);
+            }, delay);
         }
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -335,7 +343,7 @@
                 duration: 0.3,
                 onComplete: () => {
                     // Create scramble text effect
-                    scrambleText("#scramble-text", "Clyde");
+                    scrambleText("#scramble-text", "Clyde Baclao");
                 }
             }, "-=0.3")
             .to(".bio-section", {
@@ -349,6 +357,11 @@
 
                 const currentSectionEl = document.querySelector(`#${currentSection}`);
                 const targetSectionEl = document.querySelector(`#${targetSection}`);
+                
+                // Scramble text back to "Collide" when leaving about section
+                if (currentSection === 'about') {
+                    scrambleText("#scramble-text", "Collide", 0);
+                }
                 
                 // Determine slide direction based on section order
                 const currentIndex = sections.indexOf(currentSection);
@@ -421,6 +434,13 @@
                         stagger: 0.15,
                         ease: "back.out(1.1)"
                     }, "-=0.2");
+                }
+
+                // Re-animate scramble text when returning to about section
+                if (targetSection === 'about') {
+                    setTimeout(() => {
+                        scrambleText("#scramble-text", "Clyde Baclao");
+                    }, 400);
                 }
 
                 currentSection = targetSection;
