@@ -159,7 +159,7 @@ body {
 /* View Transition API styles for theme toggle */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-    animation-duration: 1s;
+    animation-duration: 1.2s;
 }
 
 ::view-transition-old(root) {
@@ -169,13 +169,41 @@ body {
 ::view-transition-new(root) {
     z-index: 2;
     clip-path: circle(0% at var(--toggle-x, 50%) var(--toggle-y, 50%));
-    animation: theme-expand 1s power2.out forwards;
+    animation: gsap-theme-expand 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-@keyframes theme-expand {
-    to {
+@keyframes gsap-theme-expand {
+    0% {
+        clip-path: circle(0% at var(--toggle-x, 50%) var(--toggle-y, 50%));
+    }
+    100% {
         clip-path: circle(150% at var(--toggle-x, 50%) var(--toggle-y, 50%));
     }
+}
+
+/* GSAP Theme Transition Styles */
+.gsap-theme-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10000;
+    pointer-events: none;
+    will-change: clip-path;
+}
+
+/* Enhanced transition effects for elements */
+.navigation,
+.profile-container,
+.bio-section,
+.skill-category,
+.project-card,
+.contact-method,
+.article-card,
+.footer {
+    will-change: transform, box-shadow;
+    transition: transform 0.2s ease-out, box-shadow 0.3s ease-out;
 }
 
 /* Fallback for browsers without View Transition API */

@@ -525,9 +525,9 @@
                 }
             }
 
-            // Fallback transition for older browsers
+            // GSAP-powered theme transition
             function fallbackThemeTransition(newTheme, centerX, centerY) {
-                console.log(`Theme transition from toggle at: ${centerX}, ${centerY}`);
+                console.log(`GSAP theme transition from toggle at: ${centerX}, ${centerY}`);
                 
                 // Calculate max distance from center to any corner for full coverage
                 const maxDistance = Math.sqrt(
@@ -535,19 +535,25 @@
                     Math.pow(Math.max(centerY, window.innerHeight - centerY), 2)
                 );
                 
-                // Create the transition mask that reveals new theme
-                const transitionMask = document.createElement('div');
-                transitionMask.className = 'theme-transition-mask';
-                transitionMask.setAttribute('data-theme', newTheme);
+                // Create the transition overlay that spreads from the toggle
+                const transitionOverlay = document.createElement('div');
+                transitionOverlay.className = 'gsap-theme-transition';
                 
-                // Style the mask with explicit colors for each theme
-                const newThemeColors = newTheme === 'dark' ? {
-                    bg: '#0e0e0e'
+                // Set theme colors based on target theme
+                const themeColors = newTheme === 'dark' ? {
+                    bg: '#0e0e0e',
+                    secondary: '#1a1a1a',
+                    text: '#ffffff',
+                    accent: '#d4af37'
                 } : {
-                    bg: '#ffffff'
+                    bg: '#ffffff',
+                    secondary: '#f8f9fa', 
+                    text: '#1a1a1a',
+                    accent: '#b8860b'
                 };
                 
-                transitionMask.style.cssText = `
+                // Style the overlay to start as a small circle at toggle position
+                transitionOverlay.style.cssText = `
                     position: fixed;
                     top: 0;
                     left: 0;
@@ -555,31 +561,95 @@
                     height: 100vh;
                     z-index: 10000;
                     pointer-events: none;
-                    background: ${newThemeColors.bg};
-                    clip-path: circle(20px at ${centerX}px ${centerY}px);
-                    overflow: hidden;
+                    background: ${themeColors.bg};
+                    transform-origin: ${centerX}px ${centerY}px;
+                    clip-path: circle(0px at ${centerX}px ${centerY}px);
                 `;
                 
-                document.body.appendChild(transitionMask);
+                // Add overlay to page
+                document.body.appendChild(transitionOverlay);
                 
-                // Start with theme already switched in the background
-                document.documentElement.setAttribute('data-theme', newTheme);
-                
-                // Create the expanding animation with GSAP
-                gsap.to(transitionMask, {
-                    clipPath: `circle(${maxDistance * 1.2}px at ${centerX}px ${centerY}px)`,
-                    duration: 1,
-                    ease: 'power2.out',
+                // Create GSAP timeline for the spreading animation
+                const tl = gsap.timeline({
                     onComplete: () => {
-                        // Store theme in localStorage
+                        // Apply theme change and store in localStorage
+                        document.documentElement.setAttribute('data-theme', newTheme);
                         switchTheme(newTheme);
                         
-                        // Clean up the transition mask
-                        if (document.body.contains(transitionMask)) {
-                            document.body.removeChild(transitionMask);
+                        // Clean up overlay
+                        if (document.body.contains(transitionOverlay)) {
+                            document.body.removeChild(transitionOverlay);
                         }
                     }
                 });
+                
+                // Step 1: Expand circle from toggle position
+                tl.to(transitionOverlay, {
+                    clipPath: `circle(${maxDistance * 1.2}px at ${centerX}px ${centerY}px)`,
+                    duration: 1.2,
+                    ease: 'power2.out'
+                });
+                
+                // Step 2: Add progressive wave effects to UI components
+                const waveElements = document.querySelectorAll(`
+                    .navigation,
+                    .profile-container,
+                    .bio-section,
+                    .skill-category,
+                    .project-card,
+                    .contact-method,
+                    .article-card,
+                    .footer
+                `);
+                
+                // Calculate wave timing for each element based on distance from toggle
+                waveElements.forEach((element) => {
+                    const rect = element.getBoundingClientRect();
+                    const elementCenterX = rect.left + rect.width / 2;
+                    const elementCenterY = rect.top + rect.height / 2;
+                    
+                    // Calculate distance from toggle center to element center
+                    const distance = Math.sqrt(
+                        Math.pow(elementCenterX - centerX, 2) + 
+                        Math.pow(elementCenterY - centerY, 2)
+                    );
+                    
+                    // Convert distance to timing (0-1 scale based on max distance)
+                    const normalizedDistance = Math.min(distance / maxDistance, 1);
+                    const waveDelay = normalizedDistance * 0.8; // Max 0.8s delay
+                    
+                    // Add wave effect when transition reaches each element
+                    tl.to(element, {
+                        scale: 1.05,
+                        duration: 0.2,
+                        ease: 'power2.out',
+                        yoyo: true,
+                        repeat: 1
+                    }, waveDelay * 0.8); // Start slightly before the wave reaches
+                    
+                    // Add subtle glow effect for accent elements
+                    if (element.classList.contains('profile-container') || 
+                        element.classList.contains('skill-category')) {
+                        tl.to(element, {
+                            boxShadow: `0 0 20px ${themeColors.accent}40`,
+                            duration: 0.3,
+                            ease: 'power2.inOut',
+                            yoyo: true,
+                            repeat: 1
+                        }, waveDelay * 0.8 + 0.1);
+                    }
+                });
+                
+                // Step 3: Add ripple effect to the toggle button itself
+                tl.to(themeToggle, {
+                    scale: 1.2,
+                    duration: 0.15,
+                    ease: 'back.out(2)',
+                    yoyo: true,
+                    repeat: 1
+                }, 0); // Start immediately
+                
+                return tl;
             }
 
             // Theme toggle click handler
