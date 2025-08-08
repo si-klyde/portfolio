@@ -6,7 +6,7 @@ const AboutSection: React.FC = () => {
       <div className="section-content">
         <div className="profile-container">
           <img 
-            src="assets/profile.jpg" 
+            src="/assets/profile.JPG" 
             alt="Clyde Baclao Profile" 
             className="profile-image" 
             onError={(e) => {
