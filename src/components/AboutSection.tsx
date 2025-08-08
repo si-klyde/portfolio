@@ -16,7 +16,7 @@ const AboutSection: React.FC = () => {
           />
           <div className="profile-content">
             <h1 className="profile-name" id="scramble-text">Collide</h1>
-            <p className="profile-title">Software Developer & Creative</p>
+            <p className="profile-title">Software Engineer & Cloud Administrator</p>
           </div>
         </div>
         

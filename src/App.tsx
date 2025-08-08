@@ -1,90 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import Navigation from './components/Navigation';
+import ThemeToggle from './components/ThemeToggle';
 import AboutSection from './components/AboutSection';
 import SkillsSection from './components/SkillsSection';
 import WorkSection from './components/WorkSection';
 import ContactSection from './components/ContactSection';
 import BlogSection from './components/BlogSection';
 import Footer from './components/Footer';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { scrambleText } from './utils/scrambleText';
 import './styles.css';
 
 const sections = ['about', 'skills', 'work', 'contact', 'blog'];
 
-function App() {
+function AppContent() {
   const [currentSection, setCurrentSection] = useState('about');
+  const { theme, setTheme } = useTheme();
 
-  useEffect(() => {
-    // Set initial states for animations
-    gsap.set([".navigation", ".about-section", ".skills-section", ".work-section", ".contact-section", ".blog-section", ".footer"], {
-      opacity: 0,
-      y: 30
-    });
-    
-    gsap.set("#scramble-text", { opacity: 0 });
-    gsap.set(".profile-image", { scale: 0.8, opacity: 0 });
-    gsap.set([".skill-category", ".project-card", ".contact-method", ".article-card"], {
-      opacity: 0,
-      y: 50
-    });
-
-    // Initially show only the about section
-    gsap.set([".skills-section", ".work-section", ".contact-section", ".blog-section"], {
-      display: "none"
-    });
-
-    // Create initial page load timeline
-    const initialTl = gsap.timeline({ defaults: { duration: 0.8, ease: "power2.out" } });
-
-    initialTl.to(".navigation", {
-      opacity: 1,
-      y: 0,
-      duration: 0.6
-    })
-    .to(".about-section", {
-      display: "flex",
-      opacity: 1,
-      y: 0,
-      duration: 0.6
-    }, "-=0.3")
-    .to(".profile-image", {
-      scale: 1,
-      opacity: 1,
-      duration: 0.6,
-      ease: "back.out(1.2)"
-    }, "-=0.4")
-    .to("#scramble-text", {
-      opacity: 1,
-      duration: 0.3,
-      onComplete: () => {
-        scrambleText("#scramble-text", "Clyde Baclao");
-      }
-    }, "-=0.3")
-    .to(".bio-section", {
-      opacity: 1,
-      y: 0
-    }, "-=0.5");
-
-    // Keyboard navigation
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const currentIndex = sections.indexOf(currentSection);
-      
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        const nextIndex = (currentIndex + 1) % sections.length;
-        navigateToSection(sections[nextIndex]);
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
-        navigateToSection(sections[prevIndex]);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [currentSection]);
-
-  const navigateToSection = (targetSection: string) => {
+  // Navigation function with slide transitions
+  const navigateToSection = useCallback((targetSection: string) => {
     if (currentSection === targetSection) return;
+    console.log('Navigating from', currentSection, 'to', targetSection);
 
     const currentSectionEl = document.querySelector(`#${currentSection}`);
     const targetSectionEl = document.querySelector(`#${targetSection}`);
@@ -167,22 +104,110 @@ function App() {
     }
 
     setCurrentSection(targetSection);
-  };
+  }, [currentSection]);
+
+  // Initial setup effect - runs only once
+  useEffect(() => {
+    // Set initial states for animations
+    gsap.set([".navigation", ".about-section", ".skills-section", ".work-section", ".contact-section", ".blog-section", ".footer", ".theme-toggle"], {
+      opacity: 0,
+      y: 30
+    });
+    
+    gsap.set("#scramble-text", { opacity: 0 });
+    gsap.set(".profile-image", { scale: 0.8, opacity: 0 });
+    gsap.set([".skill-category", ".project-card", ".contact-method", ".article-card"], {
+      opacity: 0,
+      y: 50
+    });
+
+    // Initially show only the about section
+    gsap.set([".skills-section", ".work-section", ".contact-section", ".blog-section"], {
+      display: "none"
+    });
+
+    // Create initial page load timeline
+    const initialTl = gsap.timeline({ defaults: { duration: 0.8, ease: "power2.out" } });
+
+    initialTl.to([".navigation", ".theme-toggle"], {
+      opacity: 1,
+      y: 0,
+      duration: 0.6
+    })
+    .to(".about-section", {
+      display: "flex",
+      opacity: 1,
+      y: 0,
+      duration: 0.6
+    }, "-=0.3")
+    .to(".profile-image", {
+      scale: 1,
+      opacity: 1,
+      duration: 0.6,
+      ease: "back.out(1.2)"
+    }, "-=0.4")
+    .to("#scramble-text", {
+      opacity: 1,
+      duration: 0.3,
+      onComplete: () => {
+        scrambleText("#scramble-text", "Clyde Baclao");
+      }
+    }, "-=0.3")
+    .to(".bio-section", {
+      opacity: 1,
+      y: 0
+    }, "-=0.5");
+  }, []); // Empty dependency array - run only once
+
+  // Keyboard navigation effect
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const currentIndex = sections.indexOf(currentSection);
+      
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        const nextIndex = (currentIndex + 1) % sections.length;
+        navigateToSection(sections[nextIndex]);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
+        navigateToSection(sections[prevIndex]);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [navigateToSection, currentSection]);
+
+  useEffect(() => {
+    console.log('App mounted, current section:', currentSection);
+    console.log('Theme:', theme);
+  }, [currentSection, theme]);
 
   return (
     <div className="App">
+      {/* Theme Toggle in top-right corner */}
+      <ThemeToggle theme={theme} onToggle={setTheme} />
+      
+      {/* Navigation */}
       <Navigation currentSection={currentSection} onNavigate={navigateToSection} />
       
+      {/* Main container with sections */}
       <main className="main-container">
         <AboutSection />
         <SkillsSection />
         <WorkSection />
         <ContactSection />
         <BlogSection />
+        {currentSection === 'blog' && <Footer />}
       </main>
-
-      <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

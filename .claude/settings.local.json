@@ -11,7 +11,9 @@
       "Bash(npx create-react-app:*)",
       "Bash(cp:*)",
       "Bash(npm init:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run deploy:*)"
     ],
     "deny": []
   }
