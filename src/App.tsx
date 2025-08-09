@@ -7,7 +7,6 @@ import SkillsSection from './components/SkillsSection';
 import WorkSection from './components/WorkSection';
 import ContactSection from './components/ContactSection';
 import BlogSection from './components/BlogSection';
-import Footer from './components/Footer';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { scrambleText } from './utils/scrambleText';
 import './styles.css';
@@ -109,7 +108,7 @@ function AppContent() {
   // Initial setup effect - runs only once
   useEffect(() => {
     // Set initial states for animations
-    gsap.set([".navigation", ".about-section", ".skills-section", ".work-section", ".contact-section", ".blog-section", ".footer", ".theme-toggle"], {
+    gsap.set([".navigation", ".about-section", ".skills-section", ".work-section", ".contact-section", ".blog-section", ".theme-toggle"], {
       opacity: 0,
       y: 30
     });
@@ -197,7 +196,6 @@ function AppContent() {
         <WorkSection />
         <ContactSection />
         <BlogSection />
-        {currentSection === 'blog' && <Footer />}
       </main>
     </div>
   );
