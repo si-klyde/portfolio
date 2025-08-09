@@ -516,30 +516,40 @@ h3 {
 }
 
 /* New work layout inspired by reference while keeping branding */
+.work-section .section-content {
+    max-width: 1200px;
+}
+
 .work-layout {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 2rem;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
     align-items: stretch;
     margin-top: 1.5rem;
 }
 
 .work-preview {
-    border-radius: 18px;
-    background: linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
-    border: 1px solid var(--border-color);
-    min-height: 420px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    border-radius: 0 24px 24px 0;
+    background: radial-gradient(800px 600px at 25% 95%, rgba(87, 166, 255, 0.25), transparent 60%),
+                radial-gradient(700px 500px at 70% 30%, rgba(212, 175, 55, 0.25), transparent 55%),
+                linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
+    border: none;
+    min-height: 560px;
+    box-shadow: none;
     opacity: 0;
     transform: scale(0.98);
     transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
+    position: relative;
+    /* Bleed to the left viewport edge only */
+    margin-left: calc(-1 * ((100vw - 100%) / 2));
+    width: calc(100% + ((100vw - 100%) / 2));
 }
 
 .work-list {
-    background-color: var(--bg-secondary);
-    border-radius: 18px;
-    border: 1px solid var(--border-color);
-    padding: 1.25rem 1rem;
+    background-color: transparent;
+    border-radius: 0;
+    border: none;
+    padding: 0 0 0.5rem 0;
     display: flex;
     flex-direction: column;
 }
@@ -548,6 +558,8 @@ h3 {
     opacity: 1;
     transform: scale(1);
 }
+
+/* No feathering overlay; keep edges crisp */
 
 .work-header {
     display: flex;
@@ -559,7 +571,7 @@ h3 {
 }
 
 .work-title {
-    font-size: 24px;
+    font-size: 28px;
     color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -643,9 +655,7 @@ h3 {
     .work-layout {
         grid-template-columns: 1fr;
     }
-    .work-preview {
-        min-height: 300px;
-    }
+    .work-preview { min-height: 340px; }
 }
 
 /* Contact section */
