@@ -1,9 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
-import { Flip } from 'gsap/Flip';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(Flip, ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger);
 
 interface NavigationProps {
   currentSection: string;
@@ -14,24 +13,36 @@ const Navigation: React.FC<NavigationProps> = ({ currentSection, onNavigate }) =
   const highlightRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
   const isInitialized = useRef(false);
+  const currentTimeline = useRef<gsap.core.Timeline | null>(null);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, section: string) => {
     e.preventDefault();
     onNavigate(section);
   };
 
-  // Handle both initialization and animation
+  // Handle navbar highlight positioning and animation
   useEffect(() => {
     if (!highlightRef.current || !navContainerRef.current || !currentSection) return;
 
     const activeItem = navContainerRef.current.querySelector('.nav-item.active') as HTMLElement;
     if (!activeItem) return;
 
-    // If this is the first time, just set position without animation
+    // Kill any existing timeline and animations to prevent conflicts
+    if (currentTimeline.current) {
+      currentTimeline.current.kill();
+      currentTimeline.current = null;
+    }
+    gsap.killTweensOf(highlightRef.current);
+
+    // Get the position of the active nav item relative to the container
+    const targetLeft = activeItem.offsetLeft;
+    const targetWidth = activeItem.offsetWidth;
+
+    // Initialize on first load without animation
     if (!isInitialized.current) {
       gsap.set(highlightRef.current, {
-        left: activeItem.offsetLeft,
-        width: activeItem.offsetWidth,
+        x: targetLeft,
+        width: targetWidth,
         opacity: 1,
         scaleY: 1
       });
@@ -39,33 +50,33 @@ const Navigation: React.FC<NavigationProps> = ({ currentSection, onNavigate }) =
       return;
     }
 
-    // For subsequent changes, capture state and animate
-    const state = Flip.getState(highlightRef.current);
-
-    // Position highlight to match active item
-    gsap.set(highlightRef.current, {
-      left: activeItem.offsetLeft,
-      width: activeItem.offsetWidth,
-      opacity: 1
-    });
-
-    // Animate from previous state to new state with squeeze effect
-    Flip.from(state, {
-      duration: 0.7,
-      ease: "power2.inOut",
-      onUpdate: function() {
-        // Add squeeze effect during transition
-        const progress = this.progress();
-        const squeeze = Math.sin(progress * Math.PI) * 0.15; // Max 15% squeeze
-        gsap.set(highlightRef.current, {
-          scaleY: 1 - squeeze
-        });
-      },
+    // Create new timeline for coordinated animation with squeeze effect
+    currentTimeline.current = gsap.timeline({
       onComplete: () => {
-        // Reset scale after animation
-        gsap.set(highlightRef.current, { scaleY: 1 });
+        currentTimeline.current = null;
       }
     });
+    
+    // Animate position and width while adding squeeze effect
+    currentTimeline.current
+      .to(highlightRef.current, {
+        x: targetLeft,
+        width: targetWidth,
+        duration: 0.5,
+        ease: "power2.inOut"
+      })
+      // Add squeeze effect that happens during the movement
+      .to(highlightRef.current, {
+        scaleY: 0.85,
+        duration: 0.15,
+        ease: "power1.inOut"
+      }, 0.1) // Start after position animation begins
+      // Return to normal scale
+      .to(highlightRef.current, {
+        scaleY: 1,
+        duration: 0.2,
+        ease: "power1.out"
+      }, 0.25); // Start before position animation completes
   }, [currentSection]);
 
   return (

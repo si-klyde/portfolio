@@ -79,7 +79,8 @@ body {
 .nav-highlight {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    left: 0;
+    transform: translateY(-50%) translateX(0);
     height: 40px;
     border-radius: 8px;
     opacity: 0;

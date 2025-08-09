@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -20,15 +20,18 @@ const sections = ['about', 'skills', 'work', 'contact', 'blog'];
 function AppContent() {
   const [currentSection, setCurrentSection] = useState('about');
   const { theme, setTheme } = useTheme();
+  const isNavigating = useRef(false);
 
   // Navigation function with smooth scrolling
   const navigateToSection = useCallback((targetSection: string) => {
-    console.log('🎯 navigateToSection called with:', targetSection);
-    
     const targetSectionEl = document.getElementById(targetSection);
     
     if (targetSectionEl) {
-      console.log('✅ Found target element for:', targetSection);
+      // Set navigation flag to prevent ScrollTrigger interference
+      isNavigating.current = true;
+      
+      // Update current section immediately to prevent highlight jumping
+      setCurrentSection(targetSection);
       
       // Kill any existing scroll animations
       gsap.killTweensOf(window);
@@ -44,8 +47,6 @@ function AppContent() {
         targetY = Math.max(0, targetY - navbarHeight);
       }
       
-      console.log('🎯 Scrolling to position:', targetY);
-      
       // Use GSAP ScrollTo for smooth scrolling
       gsap.to(window, {
         duration: 1.0,
@@ -54,18 +55,13 @@ function AppContent() {
           autoKill: false
         },
         ease: "power2.inOut",
-        onStart: () => console.log('🚀 Scroll started to:', targetSection),
-        onComplete: () => console.log('✅ Scroll complete to:', targetSection)
+        onComplete: () => {
+          // Reset navigation flag after scroll completes
+          setTimeout(() => {
+            isNavigating.current = false;
+          }, 100);
+        }
       });
-      
-      // Update current section
-      setCurrentSection(targetSection);
-    } else {
-      console.error('❌ Target element not found for section:', targetSection);
-      
-      // Debug: list all available sections
-      const allSections = document.querySelectorAll('section');
-      console.log('Available sections:', Array.from(allSections).map(s => s.id || s.className));
     }
   }, []);
 
@@ -86,19 +82,6 @@ function AppContent() {
       duration: 0.6
     });
 
-    // Ensure ScrollTo plugin is ready
-    const initScrolling = () => {
-      console.log('Initializing scrolling system...');
-      
-      // Test if sections exist
-      sections.forEach(section => {
-        const el = document.getElementById(section);
-        console.log(`Section ${section}:`, el ? 'found' : 'NOT FOUND');
-      });
-    };
-
-    // Run after a short delay to ensure DOM is ready
-    setTimeout(initScrolling, 100);
 
     // Set up ScrollTriggers for each section
     sections.forEach((section, index) => {
@@ -107,7 +90,10 @@ function AppContent() {
         start: "top 50%",
         end: "bottom 50%",
         onEnter: () => {
-          setCurrentSection(section);
+          // Only update section if not currently navigating programmatically
+          if (!isNavigating.current) {
+            setCurrentSection(section);
+          }
           
           // Handle scramble text for about section
           if (section === 'about') {
@@ -117,7 +103,10 @@ function AppContent() {
           }
         },
         onEnterBack: () => {
-          setCurrentSection(section);
+          // Only update section if not currently navigating programmatically
+          if (!isNavigating.current) {
+            setCurrentSection(section);
+          }
           
           // Handle scramble text for about section
           if (section === 'about') {
@@ -218,10 +207,6 @@ function AppContent() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [navigateToSection, currentSection]);
 
-  useEffect(() => {
-    console.log('App mounted, current section:', currentSection);
-    console.log('Theme:', theme);
-  }, [currentSection, theme]);
 
   return (
     <div className="App">
