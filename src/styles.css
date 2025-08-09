@@ -39,7 +39,7 @@
 }
 
 html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -50,6 +50,7 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-secondary);
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* Navigation */
@@ -274,17 +275,13 @@ body {
 .main-container {
     position: relative;
     width: 100%;
-    min-height: calc(100vh - 80px);
-    margin-top: 80px;
 }
 
 /* Section layouts */
 section {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    min-height: calc(100vh - 80px);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -343,7 +340,7 @@ h3 {
 
 /* About section (formerly hero) */
 .about-section {
-    margin-bottom: 3rem;
+    padding-top: 80px; /* Account for fixed navbar */
 }
 
 .hero-section {
