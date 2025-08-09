@@ -276,6 +276,7 @@ body {
     width: 100%;
     min-height: calc(100vh - 80px);
     margin-top: 80px;
+    overflow: hidden; /* Hide overflow from slide transitions */
 }
 
 /* Section layouts */
@@ -291,6 +292,7 @@ section {
     align-items: center;
     padding: 2rem 1.5rem;
     box-sizing: border-box;
+    overflow: hidden; /* Contain per-section overflow during slide transitions */
 }
 
 .section-content {
@@ -524,8 +526,9 @@ h3 {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
     gap: 3rem;
-    align-items: stretch;
+    align-items: start; /* prevent preview from stretching with list height */
     margin-top: 1.5rem;
+    height: 560px; /* isolate Work container height so page layout doesn't shift */
 }
 
 .work-preview {
@@ -534,7 +537,7 @@ h3 {
                 radial-gradient(700px 500px at 70% 30%, rgba(212, 175, 55, 0.25), transparent 55%),
                 linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
     border: none;
-    min-height: 560px;
+    height: 100%; /* match isolated container */
     box-shadow: none;
     opacity: 0;
     transform: scale(0.98);
@@ -549,10 +552,18 @@ h3 {
     background-color: transparent;
     border-radius: 0;
     border: none;
-    padding: 0 0 0.5rem 0;
+    padding: 0 0.25rem 0.5rem 0;
     display: flex;
     flex-direction: column;
+    overflow: auto; /* independent scroll inside Work container */
+    overscroll-behavior: contain;
+    /* Hide scrollbar while keeping scroll functional */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
+
+/* Chrome, Safari, Opera */
+.work-list::-webkit-scrollbar { display: none; }
 
 .work-preview.visible {
     opacity: 1;
@@ -640,7 +651,7 @@ h3 {
 .project-row:hover .row-arrow,
 .project-row:focus-visible .row-arrow,
 .project-row.active .row-arrow {
-    transform: scale(1.05);
+    transform: rotate(90deg) scale(1.05);
     background: var(--accent-secondary);
     color: var(--bg-primary);
     border-color: transparent;
@@ -650,12 +661,57 @@ h3 {
     border-top: 1px solid var(--border-light);
 }
 
+/* Expanded inline row details */
+.row-details {
+    grid-column: 1 / -1;
+    margin-top: 0.6rem;
+    border-top: 1px dashed var(--border-color);
+    display: grid;
+    gap: 0.5rem;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px) scaleY(0.98);
+    transition: max-height 240ms ease, opacity 200ms ease, transform 200ms ease, padding-top 200ms ease;
+    padding-top: 0;
+}
+
+.row-details.open {
+    max-height: 260px; /* large enough for content */
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    padding-top: 0.6rem;
+}
+
+.row-details__desc {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.row-details__tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tech-chip {
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    font-size: 12px;
+    font-weight: 600;
+}
+
 /* Responsive adjustments for work layout */
 @media (max-width: 1024px) {
     .work-layout {
         grid-template-columns: 1fr;
+        height: auto; /* stack preview and list on narrow screens */
     }
-    .work-preview { min-height: 340px; }
+    .work-preview { height: 340px; }
+    .work-list { overflow: visible; padding-right: 0; }
 }
 
 /* Contact section */

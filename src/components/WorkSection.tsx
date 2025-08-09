@@ -6,6 +6,8 @@ type Project = {
   href?: string;
   // Multiple previews per project for shuffling
   previews: string[];
+  description: string;
+  tech: string[];
 };
 
 interface WorkSectionProps {
@@ -24,6 +26,9 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
           'radial-gradient(900px 700px at 75% 40%, rgba(212, 175, 55, 0.35), transparent 55%), radial-gradient(800px 600px at 20% 70%, rgba(87, 166, 255, 0.35), transparent 60%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
           'radial-gradient(850px 700px at 40% 30%, rgba(87, 166, 255, 0.35), transparent 55%), radial-gradient(1000px 800px at 80% 75%, rgba(212, 175, 55, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
         ],
+        description:
+          'Animated personal site showcasing smooth transitions, a themed UI, and interactive motion design built for performance.',
+        tech: ['React', 'TypeScript', 'Vite', 'GSAP', 'CSS'],
       },
       {
         title: 'Task Management App',
@@ -33,6 +38,9 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
           'radial-gradient(800px 800px at 25% 30%, rgba(212, 175, 55, 0.3), transparent 55%), radial-gradient(900px 900px at 80% 75%, rgba(87, 166, 255, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
           'radial-gradient(700px 700px at 70% 60%, rgba(87, 166, 255, 0.3), transparent 55%), radial-gradient(900px 900px at 20% 25%, rgba(212, 175, 55, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
         ],
+        description:
+          'Collaborative tasking with real‑time updates, drag‑and‑drop boards, and offline‑friendly UX.',
+        tech: ['React', 'Node.js', 'PostgreSQL', 'WebSockets'],
       },
       {
         title: 'Data Visualization Dashboard',
@@ -42,6 +50,9 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
           'radial-gradient(700px 700px at 20% 25%, rgba(87, 166, 255, 0.35), transparent 55%), radial-gradient(1000px 600px at 80% 60%, rgba(212, 175, 55, 0.3), transparent 60%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
           'radial-gradient(900px 600px at 70% 70%, rgba(212, 175, 55, 0.3), transparent 55%), radial-gradient(800px 800px at 30% 30%, rgba(87, 166, 255, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
         ],
+        description:
+          'High‑performance charts and filters for exploring large datasets with elegant interactions.',
+        tech: ['TypeScript', 'D3.js', 'Python', 'FastAPI'],
       },
       {
         title: 'Cocolyze',
@@ -51,6 +62,9 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
           'radial-gradient(950px 900px at 30% 70%, rgba(87, 166, 255, 0.35), transparent 55%), radial-gradient(850px 800px at 70% 20%, rgba(212, 175, 55, 0.3), transparent 50%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
           'radial-gradient(800px 700px at 65% 30%, rgba(212, 175, 55, 0.3), transparent 55%), radial-gradient(900px 900px at 20% 70%, rgba(87, 166, 255, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
         ],
+        description:
+          'Design system and component library focused on clarity, motion, and accessible patterns.',
+        tech: ['Figma', 'React', 'Framer Motion'],
       },
       {
         title: 'Les Indécis',
@@ -60,6 +74,9 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
           'radial-gradient(700px 700px at 35% 40%, rgba(212, 175, 55, 0.35), transparent 55%), radial-gradient(1000px 800px at 80% 70%, rgba(87, 166, 255, 0.35), transparent 60%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
           'radial-gradient(900px 900px at 75% 80%, rgba(212, 175, 55, 0.3), transparent 60%), radial-gradient(800px 700px at 25% 30%, rgba(87, 166, 255, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
         ],
+        description:
+          'Identity exploration and micro‑site with expressive typography and subtle motion.',
+        tech: ['Branding', 'CSS', 'GSAP'],
       },
       {
         title: 'Game of the Goose',
@@ -69,6 +86,9 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
           'radial-gradient(900px 900px at 25% 30%, rgba(87, 166, 255, 0.35), transparent 55%), radial-gradient(900px 900px at 75% 80%, rgba(212, 175, 55, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
           'radial-gradient(850px 700px at 60% 35%, rgba(212, 175, 55, 0.35), transparent 55%), radial-gradient(900px 900px at 30% 75%, rgba(87, 166, 255, 0.35), transparent 55%), linear-gradient(145deg, var(--bg-secondary), var(--bg-primary))',
         ],
+        description:
+          'Classic board‑game mechanics reimagined for the web with responsive layouts and tactile feedback.',
+        tech: ['TypeScript', 'Canvas', 'Audio'],
       },
     ],
     []
@@ -131,6 +151,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
                     onBlur={() => setHoveredIndex(null)}
                     onClick={() => setSelectedIndex((prev) => (prev === index ? null : index))}
                     aria-pressed={selectedIndex === index}
+                    aria-expanded={selectedIndex === index}
                   >
                     <span className="row-title">
                       <span className="row-arrow" aria-hidden>
@@ -139,6 +160,14 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
                       {project.title}
                     </span>
                     <span className="row-discipline">{project.discipline}</span>
+                    <div className={`row-details ${selectedIndex === index ? 'open' : ''}`} aria-hidden={selectedIndex !== index}>
+                      <p className="row-details__desc">{project.description}</p>
+                      <div className="row-details__tech">
+                        {project.tech.map((t) => (
+                          <span key={t} className="tech-chip">{t}</span>
+                        ))}
+                      </div>
+                    </div>
                   </button>
                 </li>
               ))}
