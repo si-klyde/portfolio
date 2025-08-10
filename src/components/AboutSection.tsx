@@ -14,6 +14,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
   const topRightRef = useRef<HTMLDivElement | null>(null);
   const bottomRightRef = useRef<HTMLDivElement | null>(null);
   const animatingRef = useRef(false);
+  const autoActivatedRef = useRef(false);
 
   const renderHighlighted = (text: string, targets: string | string[]): React.ReactNode => {
     const list = Array.isArray(targets) ? targets.filter(Boolean) : [targets].filter(Boolean);
@@ -41,10 +42,22 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
     return nodes;
   };
 
-  // Enable click after name scramble completes
+  // Auto-activate after first name scramble completes (no longer via click)
   useEffect(() => {
-    const handleScrambleDone = () => {
+    const handleScrambleDone = (evt: Event) => {
+      const ce = evt as CustomEvent<{ selector?: string; finalText?: string }>;
+      if (ce?.detail?.selector !== '#scramble-text') return;
+      // ensure it's the final name value
+      if (ce?.detail?.finalText && ce.detail.finalText !== aboutData.name) return;
       setCanActivate(true);
+      if (!autoActivatedRef.current && !activated && !animatingRef.current) {
+        autoActivatedRef.current = true;
+        // Defer to next tick to ensure layout is ready
+        setTimeout(() => {
+          // Use the same activation flow programmatically
+          handleActivate(true);
+        }, 0);
+      }
     };
     window.addEventListener('scramble:complete', handleScrambleDone as EventListener);
     return () => window.removeEventListener('scramble:complete', handleScrambleDone as EventListener);
@@ -55,9 +68,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
     // Intentionally do nothing on section deactivation to preserve the activated state
   }, [isActive, activated]);
 
-  // Click handler to prepare layout containers for future animation
-  const handleActivate = () => {
-    if (!canActivate || activated || animatingRef.current) return;
+  // Activation flow (programmatic)
+  const handleActivate = (force: boolean = false) => {
+    if ((!canActivate && !force) || activated || animatingRef.current) return;
     animatingRef.current = true;
 
     // Manual FLIP for the left card to avoid offset issues
@@ -226,7 +239,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
   };
 
   return (
-    <section ref={sectionRef} className={`about-section ${canActivate ? 'can-activate' : ''} ${activated ? 'about-activated' : ''}`} id="about" onClick={handleActivate}>
+    <section ref={sectionRef} className={`about-section ${canActivate ? 'can-activate' : ''} ${activated ? 'about-activated' : ''}`} id="about">
       <div className="section-content about-grid">
         {/* Left column - existing content wrapped in an invisible card */}
         <div className="about-left-card">

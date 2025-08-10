@@ -542,9 +542,27 @@ h3 {
 
 @media (max-width: 768px) {
     .about-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* stack all blocks */
+        row-gap: var(--about-gap);
     }
+    /* Right column should not take space until activated */
     .about-right { display: none; }
+    .about-activated .about-right {
+        display: grid;
+        grid-template-rows: auto auto;
+        row-gap: var(--about-gap);
+    }
+    /* Disable equal-height rules on mobile for natural stacking */
+    .about-activated .about-left-card { height: auto; }
+    .about-activated .about-right { grid-template-rows: auto auto; height: auto; }
+    .about-activated .about-tile { height: auto; min-height: 0; }
+
+    /* Allow sections to expand with content and the page to scroll */
+    .main-container { overflow: visible; }
+    section { position: static; min-height: auto; align-items: stretch; }
+
+    /* When activated, let tiles contribute to layout height */
+    .about-activated .about-tile { display: block; }
 }
 
 .profile-container {
