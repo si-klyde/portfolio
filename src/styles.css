@@ -308,6 +308,11 @@ section {
     position: relative; /* make this the containing block for Flip absolute positioning */
 }
 
+/* Widen About section to occupy more horizontal space only after activation */
+.about-activated .section-content {
+    max-width: 1100px;
+}
+
 .hero-section {
     justify-content: center;
 }
@@ -371,8 +376,9 @@ h3 {
     position: relative; /* ensure absolute Flip positions anchor here */
 }
 
-/* Activated: expand left to fixed 240px and reveal right column */
-.about-activated { --about-left-col: 240px; --about-right-col: 1fr; }
+/* Activated: expand left to fixed width and reveal right column */
+/* Slightly increase left column width; right grows to fill */
+.about-activated { --about-left-col: 280px; --about-right-col: 1fr; }
 
 .about-left-card {
     background: transparent; /* match background so it's invisible */
@@ -398,7 +404,12 @@ h3 {
     border: 1px solid var(--border-light);
     border-radius: 12px;
     padding: 1rem;
+    height: 100%; /* fill grid track height so bento grid is uniform */
 }
+
+/* Nudge the left card contents slightly downward after activation
+   Use margin on inner wrapper so it isn't overridden by GSAP inline paddings */
+.about-activated .about-left-card .about-left-inner { margin-top: 3rem; }
 
 /* Bio text sits inside the unified tile; no inner card */
 .about-activated .bio-section,
@@ -409,7 +420,7 @@ h3 {
 
 .about-right {
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto auto; /* default; overridden when activated to equal heights */
     row-gap: var(--about-gap);
     align-self: stretch;
     overflow: visible; /* allow enter animation from below */
@@ -420,11 +431,51 @@ h3 {
     border-radius: 12px;
     border: 1px solid var(--border-light);
     display: none; /* start invisible; shown via animation */
-    min-height: 180px;
+    min-height: 150px; /* default; overridden when activated to equalize heights */
+    padding: 1.25rem; /* content padding for new about tiles */
     backface-visibility: hidden;
     transform: translateZ(0);
     will-change: transform, opacity;
+    overflow: hidden; /* prevent content from exceeding container */
 }
+
+/* About tile typography and spacing */
+.about-tile h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.about-tile p {
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.about-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+}
+
+/* Bullet list styling for "Things I like" */
+.about-bullets {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0;
+    display: grid;
+    gap: 0.4rem;
+}
+.about-bullets li {
+    color: var(--text-secondary);
+}
+
+/* Equalize heights across the bento grid after activation */
+.about-activated .about-grid { align-items: stretch; }
+.about-activated .about-right { grid-template-rows: 1fr 1fr; height: 100%; }
+.about-activated .about-tile { height: 100%; min-height: 0; }
 
 /* Ensure left card keeps its width while Flip computes positions to avoid snapping to far left */
 .about-left-card { justify-self: start; }
@@ -443,9 +494,19 @@ h3 {
 /* Final (activated) format for the left tile: image top, name/title below, then description */
 .about-activated .about-left-card .profile-container {
     flex-direction: column;
-    align-items: stretch; /* keep text left-aligned */
-    gap: var(--about-gap); /* normalized spacing */
-    margin-bottom: 0.5rem; /* reduce space before description */
+    align-items: center; /* center avatar and text after activation */
+    gap: var(--about-gap);
+    margin-bottom: 0.5rem;
+}
+
+/* Center name and title after activation */
+.about-activated .about-left-card .profile-content {
+    align-items: center;
+    text-align: center;
+}
+.about-activated .about-left-card .profile-name,
+.about-activated .about-left-card .profile-title {
+    text-align: center;
 }
 
 /* Ensure left card adapts to light theme visuals */
@@ -523,6 +584,20 @@ h3 {
 
 .bio-text {
     margin: 0;
+}
+
+/* Ensure styling can be applied reliably after activation finishes */
+.about-ready .bio-section {
+    visibility: visible !important;
+}
+.about-ready .bio-text {
+    color: var(--text-secondary);
+}
+
+/* Center the bio/description text after activation */
+.about-activated .about-left-card .bio-section,
+.about-activated .about-left-card .bio-text {
+    text-align: center;
 }
 
 /* Skills section */

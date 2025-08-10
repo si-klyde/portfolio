@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
 
@@ -20,17 +20,20 @@ const Navigation: React.FC<NavigationProps> = ({ currentSection, onNavigate }) =
   };
 
   // Handle both initialization and animation
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!highlightRef.current || !navContainerRef.current || !currentSection) return;
 
-    const activeItem = navContainerRef.current.querySelector('.nav-item.active') as HTMLElement;
+    const container = navContainerRef.current;
+    const activeItem = container.querySelector('.nav-item.active') as HTMLElement;
     if (!activeItem) return;
 
     // If this is the first time, just set position without animation
     if (!isInitialized.current) {
+      const containerRect = container.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
       gsap.set(highlightRef.current, {
-        left: activeItem.offsetLeft,
-        width: activeItem.offsetWidth,
+        left: itemRect.left - containerRect.left + container.scrollLeft,
+        width: itemRect.width,
         opacity: 1,
         scaleY: 1
       });
@@ -42,9 +45,11 @@ const Navigation: React.FC<NavigationProps> = ({ currentSection, onNavigate }) =
     const state = Flip.getState(highlightRef.current);
 
     // Position highlight to match active item
+    const containerRect2 = container.getBoundingClientRect();
+    const itemRect2 = activeItem.getBoundingClientRect();
     gsap.set(highlightRef.current, {
-      left: activeItem.offsetLeft,
-      width: activeItem.offsetWidth,
+      left: itemRect2.left - containerRect2.left + container.scrollLeft,
+      width: itemRect2.width,
       opacity: 1
     });
 
@@ -66,6 +71,45 @@ const Navigation: React.FC<NavigationProps> = ({ currentSection, onNavigate }) =
       }
     });
   }, [currentSection]);
+
+  // On mount and on window resize, force a recalculation to avoid initial misalignment
+  useEffect(() => {
+    const sync = () => {
+      if (!highlightRef.current || !navContainerRef.current) return;
+      const container = navContainerRef.current;
+      const activeItem = container.querySelector('.nav-item.active') as HTMLElement;
+      if (!activeItem) return;
+      const cr = container.getBoundingClientRect();
+      const ir = activeItem.getBoundingClientRect();
+      gsap.set(highlightRef.current, {
+        left: ir.left - cr.left + container.scrollLeft,
+        width: ir.width,
+        opacity: 1,
+        scaleY: 1
+      });
+    };
+
+    sync();
+
+    window.addEventListener('resize', sync);
+    requestAnimationFrame(sync);
+    const timeout = setTimeout(sync, 100);
+    // Re-sync after fonts load
+    if ((document as any).fonts && (document as any).fonts.ready) {
+      (document as any).fonts.ready.then(sync).catch(() => {});
+    }
+    // Observe size changes of container/active item
+    const ro = new ResizeObserver(sync);
+    if (navContainerRef.current) ro.observe(navContainerRef.current);
+    const activeItem = navContainerRef.current?.querySelector('.nav-item.active') as HTMLElement | null;
+    if (activeItem) ro.observe(activeItem);
+
+    return () => {
+      window.removeEventListener('resize', sync);
+      clearTimeout(timeout);
+      ro.disconnect();
+    };
+  }, []);
 
   return (
     <nav className="navigation">

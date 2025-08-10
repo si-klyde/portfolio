@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
-gsap.registerPlugin(Flip);
+import { TextPlugin } from 'gsap/TextPlugin';
+gsap.registerPlugin(Flip, TextPlugin);
+import aboutData from '../data/about.json';
 
 interface AboutSectionProps { isActive?: boolean }
 
@@ -13,6 +15,32 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
   const bottomRightRef = useRef<HTMLDivElement | null>(null);
   const animatingRef = useRef(false);
 
+  const renderHighlighted = (text: string, targets: string | string[]): React.ReactNode => {
+    const list = Array.isArray(targets) ? targets.filter(Boolean) : [targets].filter(Boolean);
+    if (list.length === 0) return text;
+    const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = list
+      .slice()
+      .sort((a, b) => b.length - a.length)
+      .map(escapeRegExp)
+      .join("|");
+    const regex = new RegExp(pattern, "g");
+    const nodes: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        nodes.push(text.slice(lastIndex, match.index));
+      }
+      nodes.push(
+        <span key={`hl-${match.index}`} className="highlight">{match[0]}</span>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
+    return nodes;
+  };
+
   // Enable click after name scramble completes
   useEffect(() => {
     const handleScrambleDone = () => {
@@ -22,31 +50,10 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
     return () => window.removeEventListener('scramble:complete', handleScrambleDone as EventListener);
   }, []);
 
-  // Reset layout when section becomes inactive (use GSAP Flip)
+  // Persist the activated layout as the base even when navigating away
   useEffect(() => {
-    if (!isActive && activated && !animatingRef.current) {
-      animatingRef.current = true;
-      const leftCard = document.querySelector('.about-left-card') as HTMLElement | null;
-      const grid = document.querySelector('.about-grid') as HTMLElement | null;
-      if (!leftCard || !grid) { animatingRef.current = false; return; }
-
-      const state = Flip.getState([leftCard, grid]);
-      sectionRef.current?.classList.remove('about-activated');
-
-      Flip.from(state, {
-        duration: 0.7,
-        ease: 'power2.inOut',
-        absolute: true,
-        scale: true,
-        nested: true,
-        onComplete: () => {
-          [topRightRef.current, bottomRightRef.current].forEach(el => { if (el) (el as HTMLElement).style.display = 'none'; });
-          setActivated(false);
-          animatingRef.current = false;
-        }
-      });
-    }
-  }, [isActive]);
+    // Intentionally do nothing on section deactivation to preserve the activated state
+  }, [isActive, activated]);
 
   // Click handler to prepare layout containers for future animation
   const handleActivate = () => {
@@ -168,14 +175,43 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
         '-=0.25'
       );
 
+      // (typing effect scheduled later, after left content appears)
+
       // Fade text back in near the end; keep avatar grayscale
       const textBackEls = [leftCard.querySelector('.profile-content'), leftCard.querySelector('.bio-section')].filter(Boolean) as Element[];
       if (textBackEls.length) tl.to(textBackEls, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.06, ease: 'power2.out' }, '-=0.55');
       if (avatarEl) tl.to(avatarEl, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, '<');
       // Reveal the left card itself just at the end (ghost covers the motion)
       tl.to(leftCard, { opacity: 1, duration: 0.12, ease: 'power1.out' }, '>-0.12');
-      // Remove transitioning class at the very end so tile BG appears AFTER motion
-      tl.add(() => { sectionRef.current?.classList.remove('is-transitioning'); });
+      // Remove transitioning class and mark ready at the very end so CSS can target stable state
+      tl.add(() => {
+        sectionRef.current?.classList.remove('is-transitioning');
+        sectionRef.current?.classList.add('about-ready');
+        try { window.dispatchEvent(new CustomEvent('about:ready')); } catch (_) { /* no-op */ }
+      });
+
+      // Prepare and run typewriter effect inside the right tiles AFTER left content is visible
+      const prepareTypeTargets = (root: HTMLElement): { el: HTMLElement; text: string }[] => {
+        const result: { el: HTMLElement; text: string }[] = [];
+        const nodes = root.querySelectorAll<HTMLElement>('.typer');
+        nodes.forEach((node) => {
+          const finalText = node.dataset.text ?? node.textContent ?? '';
+          node.textContent = '';
+          result.push({ el: node, text: finalText });
+        });
+        return result;
+      };
+
+      const typeTargets: { el: HTMLElement; text: string }[] = [];
+      if (topRightRef.current) typeTargets.push(...prepareTypeTargets(topRightRef.current));
+      if (bottomRightRef.current) typeTargets.push(...prepareTypeTargets(bottomRightRef.current));
+
+      // Sequentially type each target with durations based on length
+      typeTargets.forEach((t) => {
+        const letters = t.text.length;
+        const duration = Math.min(3.5, Math.max(0.8, letters / 22));
+        tl.to(t.el, { text: t.text, duration, ease: 'none' }, '+=0.1');
+      });
 
       setActivated(true);
     };
@@ -198,7 +234,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
           <div className="about-left-panel">
             <div className="profile-container" role="group" aria-label="Profile">
           <img 
-            src="/portfolio/assets/profile.JPG" 
+            src={aboutData.profileImage} 
             alt="Clyde Baclao Profile" 
             className="profile-image" 
             onError={(e) => {
@@ -208,14 +244,13 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
           />
               <div className="profile-content">
                 <h1 className="profile-name" id="scramble-text">Collide</h1>
-                <p className="profile-title">Software Engineer & Cloud Administrator</p>
+                <p className="profile-title">{aboutData.title}</p>
               </div>
             </div>
             
             <div className="bio-section">
               <p className="bio-text">
-                Passionate about creating <span className="highlight">meaningful digital experiences</span> through clean code and thoughtful design. 
-                Currently exploring the intersection of technology and human creativity.
+                {renderHighlighted(aboutData.bio.text, aboutData.bio.highlight as any)}
               </p>
             </div>
           </div>
@@ -223,8 +258,23 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
         </div>
         {/* Right column placeholders - initially invisible, do not affect initial layout height */}
         <div className="about-right">
-          <div className="about-tile" ref={topRightRef} aria-hidden="true" />
-          <div className="about-tile" ref={bottomRightRef} aria-hidden="true" />
+          <div className="about-tile" ref={topRightRef} aria-hidden="true">
+            <h3>More about me</h3>
+            <p className="typer" data-text={aboutData.more.paragraph}></p>
+            <ul className="about-list">
+              <li><span className="highlight">Strengths</span>: <span className="typer" data-text={aboutData.more.strengths}></span></li>
+              <li><span className="highlight">Currently</span>: <span className="typer" data-text={aboutData.more.currently}></span></li>
+              <li><span className="highlight">Values</span>: <span className="typer" data-text={aboutData.more.values}></span></li>
+            </ul>
+          </div>
+          <div className="about-tile" ref={bottomRightRef} aria-hidden="true">
+            <h3>Things I like</h3>
+            <ul className="about-bullets">
+              {aboutData.likes.map((item, idx) => (
+                <li key={idx} className="typer" data-text={item}></li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

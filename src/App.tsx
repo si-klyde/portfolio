@@ -8,6 +8,7 @@ import WorkSection from './components/WorkSection';
 import ContactSection from './components/ContactSection';
 import BlogSection from './components/BlogSection';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import aboutData from './data/about.json';
 import { scrambleText } from './utils/scrambleText';
 import './styles.css';
 
@@ -151,7 +152,7 @@ function AppContent() {
     // Re-animate scramble text when returning to about section
     if (targetSection === 'about') {
       setTimeout(() => {
-        scrambleText("#scramble-text", "Clyde Baclao");
+        scrambleText("#scramble-text", aboutData.name);
       }, 400);
     }
 
@@ -202,7 +203,7 @@ function AppContent() {
       opacity: 1,
       duration: 0.3,
       onComplete: () => {
-        scrambleText("#scramble-text", "Clyde Baclao");
+        scrambleText("#scramble-text", aboutData.name);
       }
     }, "-=0.3")
     .to(".bio-section", {
