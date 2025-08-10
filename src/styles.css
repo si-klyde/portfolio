@@ -305,6 +305,7 @@ section {
     max-width: 768px;
     width: 100%;
     margin: 0 auto;
+    position: relative; /* make this the containing block for Flip absolute positioning */
 }
 
 .hero-section {
@@ -359,16 +360,19 @@ h3 {
 }
 
 /* About section responsive grid and invisible tiles */
+.about-section { --about-gap: 1.25rem; }
 .about-grid {
     display: grid;
-    grid-template-columns: 1fr; /* default: single column until activation */
-    gap: 1rem;
+    /* Two columns at all times; right column starts at 0 width */
+    grid-template-columns: var(--about-left-col, 1fr) var(--about-right-col, 0fr);
+    column-gap: var(--about-gap);
+    row-gap: var(--about-gap);
     align-items: start;
+    position: relative; /* ensure absolute Flip positions anchor here */
 }
 
-.about-activated .about-grid {
-    grid-template-columns: 240px 1fr;
-}
+/* Activated: expand left to fixed 240px and reveal right column */
+.about-activated { --about-left-col: 240px; --about-right-col: 1fr; }
 
 .about-left-card {
     background: transparent; /* match background so it's invisible */
@@ -379,7 +383,7 @@ h3 {
 .about-left-panel {
     display: grid;
     grid-auto-rows: min-content;
-    gap: 1rem;
+    gap: var(--about-gap); /* normalized spacing across elements */
 }
 
 /* After activation, make the name+avatar sit on a tile matching others */
@@ -400,8 +404,9 @@ h3 {
 .about-right {
     display: grid;
     grid-template-rows: 1fr 1fr;
-    gap: 1rem;
+    row-gap: var(--about-gap);
     align-self: stretch;
+    overflow: visible; /* allow enter animation from below */
 }
 
 .about-tile {
@@ -411,6 +416,42 @@ h3 {
     display: none; /* start invisible; shown via animation */
     min-height: 180px;
 }
+
+/* Ensure left card keeps its width while Flip computes positions to avoid snapping to far left */
+.about-left-card { justify-self: start; }
+.about-left-card,
+.about-left-card * { transform-origin: top left; }
+
+/* Create an inner wrapper so the container can scale while contents stay crisp */
+.about-left-inner {
+    transform-origin: top left;
+    overflow: hidden; /* avoid text edge clipping during size tween */
+}
+
+/* Final (activated) format for the left tile: image top, name/title below, then description */
+.about-activated .about-left-card .profile-container {
+    flex-direction: column;
+    align-items: stretch; /* keep text left-aligned */
+    gap: var(--about-gap); /* normalized spacing */
+    margin-bottom: 0.5rem; /* reduce space before description */
+}
+
+.about-activated .about-left-card .profile-image {
+    width: 112px;
+    height: 112px;
+    margin-left: auto;
+    margin-right: auto; /* center avatar at top */
+}
+
+.about-activated .about-left-card .profile-content { margin-top: 0; }
+.about-activated .about-left-card .profile-name { white-space: nowrap; }
+.about-activated .about-left-card .bio-section { margin-top: 0.5rem; }
+
+/* Reduce inter-block gap specifically in activated left panel */
+.about-activated .about-left-panel { gap: 0.5rem; }
+
+/* Disable content scaling during the manual FLIP by counter-scaling children */
+/* (placeholder removed) */
 
 /* Prevent the right tiles from increasing the initial section height */
 .about-section .about-right { position: relative; }
@@ -427,7 +468,7 @@ h3 {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem; /* reduced pre-activation gap above description */
 }
 
 .profile-image {
@@ -597,7 +638,7 @@ h3 {
 .work-layout {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    gap: 3rem;
+    gap: 3rem; /* leave work as-is */
     align-items: start; /* prevent preview from stretching with list height */
     margin-top: 1.5rem;
     height: 560px; /* isolate Work container height so page layout doesn't shift */

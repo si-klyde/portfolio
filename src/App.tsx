@@ -244,7 +244,7 @@ function AppContent() {
       
       {/* Main container with sections */}
       <main className="main-container">
-        <AboutSection />
+        <AboutSection isActive={currentSection === 'about'} />
         <SkillsSection />
         <WorkSection isActive={currentSection === 'work'} />
         <ContactSection />
