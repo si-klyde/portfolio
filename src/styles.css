@@ -358,6 +358,71 @@ h3 {
     margin-bottom: 3rem;
 }
 
+/* About section responsive grid and invisible tiles */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* default: single column until activation */
+    gap: 1rem;
+    align-items: start;
+}
+
+.about-activated .about-grid {
+    grid-template-columns: 240px 1fr;
+}
+
+.about-left-card {
+    background: transparent; /* match background so it's invisible */
+    border-radius: 12px;
+}
+
+/* Ensure the left panel groups the avatar, name and description together after activation */
+.about-left-panel {
+    display: grid;
+    grid-auto-rows: min-content;
+    gap: 1rem;
+}
+
+/* After activation, make the name+avatar sit on a tile matching others */
+/* When activated, left side becomes one single tile containing avatar/name and description */
+.about-activated .about-left-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.about-activated .bio-section {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.about-right {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+    align-self: stretch;
+}
+
+.about-tile {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    display: none; /* start invisible; shown via animation */
+    min-height: 180px;
+}
+
+/* Prevent the right tiles from increasing the initial section height */
+.about-section .about-right { position: relative; }
+.about-section .about-right .about-tile { position: relative; }
+
+@media (max-width: 768px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+    .about-right { display: none; }
+}
+
 .profile-container {
     display: flex;
     align-items: center;

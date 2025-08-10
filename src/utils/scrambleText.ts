@@ -1,4 +1,9 @@
-export function scrambleText(selector: string, finalText: string, delay = 600) {
+export function scrambleText(
+  selector: string,
+  finalText: string,
+  delay = 600,
+  onComplete?: () => void
+) {
   const element = document.querySelector(selector);
   if (!element) return;
   
@@ -46,6 +51,17 @@ export function scrambleText(selector: string, finalText: string, delay = 600) {
       if (frame > maxFrames) {
         clearInterval(scrambleInterval);
         element.textContent = finalText;
+        // Notify listeners that scramble has finished for this selector
+        try {
+          window.dispatchEvent(
+            new CustomEvent('scramble:complete', {
+              detail: { selector, finalText }
+            })
+          );
+        } catch (_) {
+          // no-op if CustomEvent unsupported
+        }
+        if (onComplete) onComplete();
       }
     }, 50);
   }, delay);
