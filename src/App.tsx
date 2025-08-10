@@ -46,6 +46,37 @@ function AppContent() {
     if (currentSectionEl) gsap.killTweensOf(currentSectionEl);
     if (targetSectionEl) gsap.killTweensOf(targetSectionEl);
 
+    // Defensive cleanup: reset any non-active sections to a safe baseline to avoid lingering UI
+    const allSectionEls = sections
+      .map((id) => document.querySelector(`#${id}`))
+      .filter((el): el is Element => !!el);
+
+    const internalSelectors = '.skill-category, .project-card, .contact-method, .article-card, #scramble-text, .profile-image, .bio-section';
+
+    allSectionEls.forEach((el) => {
+      if (el !== targetSectionEl && el !== currentSectionEl) {
+        // Kill child tweens and clear inline styles
+        const internal = el.querySelectorAll(internalSelectors);
+        gsap.killTweensOf([el, internal]);
+        gsap.set(internal, { clearProps: 'all' });
+        // Hide and reset transforms to prevent stray elements
+        gsap.set(el, { display: 'none', x: 0, opacity: 1 });
+      }
+    });
+
+    // Ensure current section isn't left halfway after kills
+    if (currentSectionEl) {
+      const internal = currentSectionEl.querySelectorAll(internalSelectors);
+      gsap.set(internal, { clearProps: 'all' });
+      gsap.set(currentSectionEl, { x: 0 });
+    }
+
+    // Prepare target section by clearing any residual inline styles from prior animations
+    if (targetSectionEl) {
+      const internal = targetSectionEl.querySelectorAll(internalSelectors);
+      gsap.set(internal, { clearProps: 'all' });
+    }
+
     // Create transition timeline
     const transitionTl = gsap.timeline({
       onComplete: () => {
