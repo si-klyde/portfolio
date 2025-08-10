@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { gsap } from 'gsap';
 import Navigation from './components/Navigation';
 import ThemeToggle from './components/ThemeToggle';
@@ -16,6 +16,7 @@ const sections = ['about', 'skills', 'work', 'contact', 'blog'];
 function AppContent() {
   const [currentSection, setCurrentSection] = useState('about');
   const { theme, setTheme } = useTheme();
+  const transitionTlRef = useRef<gsap.core.Timeline | null>(null);
 
   // Navigation function with slide transitions
   const navigateToSection = useCallback((targetSection: string) => {
@@ -35,8 +36,23 @@ function AppContent() {
     const targetIndex = sections.indexOf(targetSection);
     const slideDirection = targetIndex > currentIndex ? 1 : -1;
 
+    // Kill any in-flight transition to avoid race conditions during rapid navigation
+    if (transitionTlRef.current) {
+      transitionTlRef.current.kill();
+      transitionTlRef.current = null;
+    }
+
+    // Also kill tweens on involved elements before starting a new transition
+    if (currentSectionEl) gsap.killTweensOf(currentSectionEl);
+    if (targetSectionEl) gsap.killTweensOf(targetSectionEl);
+
     // Create transition timeline
-    const transitionTl = gsap.timeline();
+    const transitionTl = gsap.timeline({
+      onComplete: () => {
+        transitionTlRef.current = null;
+      }
+    });
+    transitionTlRef.current = transitionTl;
 
     // Set initial position for target section (off-screen)
     gsap.set(targetSectionEl, { 
@@ -60,39 +76,45 @@ function AppContent() {
       ease: "back.out(0.5)"
     }, 0);
 
-    // Animate section-specific content with fade-in only
-    if (targetSection === 'skills') {
-      transitionTl.set(".skill-category", { opacity: 0 })
-      .to(".skill-category", {
-        opacity: 1,
-        duration: 0.4,
-        stagger: 0.1,
-        ease: "power2.out"
-      }, "-=0.1");
-    } else if (targetSection === 'work') {
-      transitionTl.set(".project-card", { opacity: 0 })
-      .to(".project-card", {
-        opacity: 1,
-        duration: 0.4,
-        stagger: 0.15,
-        ease: "power2.out"
-      }, "-=0.1");
-    } else if (targetSection === 'contact') {
-      transitionTl.set(".contact-method", { opacity: 0 })
-      .to(".contact-method", {
-        opacity: 1,
-        duration: 0.4,
-        stagger: 0.1,
-        ease: "power2.out"
-      }, "-=0.1");
-    } else if (targetSection === 'blog') {
-      transitionTl.set(".article-card", { opacity: 0 })
-      .to(".article-card", {
-        opacity: 1,
-        duration: 0.4,
-        stagger: 0.15,
-        ease: "power2.out"
-      }, "-=0.1");
+    // Animate section-specific content with fade-in only (scoped to target section)
+    if (targetSectionEl) {
+      if (targetSection === 'skills') {
+        const items = targetSectionEl.querySelectorAll('.skill-category');
+        transitionTl.set(items, { opacity: 0 })
+          .to(items, {
+            opacity: 1,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: 'power2.out'
+          }, '-=0.1');
+      } else if (targetSection === 'work') {
+        const items = targetSectionEl.querySelectorAll('.project-card');
+        transitionTl.set(items, { opacity: 0 })
+          .to(items, {
+            opacity: 1,
+            duration: 0.4,
+            stagger: 0.15,
+            ease: 'power2.out'
+          }, '-=0.1');
+      } else if (targetSection === 'contact') {
+        const items = targetSectionEl.querySelectorAll('.contact-method');
+        transitionTl.set(items, { opacity: 0 })
+          .to(items, {
+            opacity: 1,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: 'power2.out'
+          }, '-=0.1');
+      } else if (targetSection === 'blog') {
+        const items = targetSectionEl.querySelectorAll('.article-card');
+        transitionTl.set(items, { opacity: 0 })
+          .to(items, {
+            opacity: 1,
+            duration: 0.4,
+            stagger: 0.15,
+            ease: 'power2.out'
+          }, '-=0.1');
+      }
     }
 
     // Re-animate scramble text when returning to about section

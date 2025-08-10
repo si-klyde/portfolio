@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import ArrowIcon from './ArrowIcon';
 
 type Project = {
   title: string;
@@ -123,6 +124,19 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
     }
   }, [isActive]);
 
+  // Lock page scroll while Work is active (all breakpoints) to avoid parent bounce
+  useEffect(() => {
+    if (!isActive) return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+    };
+  }, [isActive]);
+
   return (
     <section className="work-section" id="work">
       <div className="section-content">
@@ -155,7 +169,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({ isActive }) => {
                   >
                     <span className="row-title">
                       <span className="row-arrow" aria-hidden>
-                        →
+                        <ArrowIcon expanded={selectedIndex === index} />
                       </span>
                       {project.title}
                     </span>
