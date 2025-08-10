@@ -22,57 +22,29 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
     return () => window.removeEventListener('scramble:complete', handleScrambleDone as EventListener);
   }, []);
 
-  // Reset layout when section becomes inactive to avoid stale sizes
+  // Reset layout when section becomes inactive (use GSAP Flip)
   useEffect(() => {
     if (!isActive && activated && !animatingRef.current) {
-      // Animate back to initial layout
       animatingRef.current = true;
       const leftCard = document.querySelector('.about-left-card') as HTMLElement | null;
-      const inner = leftCard?.querySelector('.about-left-inner') as HTMLElement | null;
-      const tiles = [topRightRef.current, bottomRightRef.current].filter(Boolean) as HTMLElement[];
-      if (!leftCard) { animatingRef.current = false; return; }
+      const grid = document.querySelector('.about-grid') as HTMLElement | null;
+      if (!leftCard || !grid) { animatingRef.current = false; return; }
 
-      // Current rect while in activated layout
-      const first = leftCard.getBoundingClientRect();
-
-      // Switch to base layout (single column)
+      const state = Flip.getState([leftCard, grid]);
       sectionRef.current?.classList.remove('about-activated');
 
-      // Force layout and measure destination
-      const last = leftCard.getBoundingClientRect();
-      const dx = first.left - last.left;
-      const dy = first.top - last.top;
-
-      // Hold visual position to the 'first' state
-      gsap.set(leftCard, { x: dx, y: dy, width: first.width, height: first.height });
-      if (inner) gsap.set(inner, { transformOrigin: 'top left' });
-
-      const tl = gsap.timeline({
-        defaults: { ease: 'power2.inOut' },
+      Flip.from(state, {
+        duration: 0.7,
+        ease: 'power2.inOut',
+        absolute: true,
+        scale: true,
+        nested: true,
         onComplete: () => {
-          animatingRef.current = false;
+          [topRightRef.current, bottomRightRef.current].forEach(el => { if (el) (el as HTMLElement).style.display = 'none'; });
           setActivated(false);
-          gsap.set(leftCard, { clearProps: 'transform,width,height' });
-          if (inner) gsap.set(inner, { clearProps: 'transform' });
-          tiles.forEach(t => { if (t) t.style.display = 'none'; });
+          animatingRef.current = false;
         }
       });
-
-      // Animate left card back to its base position/size with inner blur during motion
-      tl.to(leftCard, { x: 0, y: 0, width: last.width, height: last.height, duration: 0.7 }, 0);
-      if (inner) tl.fromTo(inner, { filter: 'blur(10px)' }, { filter: 'blur(0px)', duration: 0.7, ease: 'power2.inOut' }, 0);
-
-      // Slide/fade tiles down then hide
-      if (tiles.length) {
-        tl.to(tiles as gsap.TweenTarget, {
-          opacity: 0,
-          y: 80,
-          scale: 0.98,
-          duration: 0.5,
-          ease: 'power2.in',
-          stagger: 0.08,
-        }, 0);
-      }
     }
   }, [isActive]);
 
@@ -90,13 +62,30 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
     // Fade out textual content quickly BEFORE transition
     const profileContentEl = leftCard.querySelector('.profile-content') as HTMLElement | null;
     const bioEl = leftCard.querySelector('.bio-section') as HTMLElement | null;
+    const avatarEl = leftCard.querySelector('.profile-image') as HTMLElement | null;
     const textEls = [profileContentEl, bioEl].filter(Boolean) as HTMLElement[];
 
+    // Build a ghost that matches the pre-activation bio tile shape and style
+    let bioGhost: HTMLDivElement | null = null;
+    let bioStartRect: DOMRect | null = null;
+    if (bioEl) {
+      bioStartRect = bioEl.getBoundingClientRect();
+      const cs = getComputedStyle(bioEl);
+      bioGhost = document.createElement('div');
+      // No border on the ghost; keep it visually the same color as the background
+      bioGhost.style.cssText = `position: fixed; left: ${bioStartRect.left}px; top: ${bioStartRect.top}px; width: ${bioStartRect.width}px; height: ${bioStartRect.height}px; background: ${cs.backgroundColor}; border: none; border-radius: ${cs.borderTopLeftRadius}; box-shadow: ${cs.boxShadow || 'none'}; z-index: 9999; pointer-events: none; will-change: transform,width,height,opacity; opacity: 1;`;
+      document.body.appendChild(bioGhost);
+      (bioEl as HTMLElement).style.visibility = 'hidden';
+    }
+
     const startTransition = () => {
+      // Hide left card during layout swap to prevent early growth flicker
+      gsap.set(leftCard, { opacity: 0 });
+
       // Apply final layout and reveal right tiles (hidden initially)
-      if (sectionRef.current) sectionRef.current.classList.add('about-activated');
-      if (topRightRef.current) { topRightRef.current.style.display = 'block'; topRightRef.current.style.opacity = '0'; }
-      if (bottomRightRef.current) { bottomRightRef.current.style.display = 'block'; bottomRightRef.current.style.opacity = '0'; }
+      if (sectionRef.current) sectionRef.current.classList.add('about-activated', 'is-transitioning');
+      if (topRightRef.current) { topRightRef.current.style.display = 'block'; (topRightRef.current as HTMLElement).style.opacity = '0'; }
+      if (bottomRightRef.current) { bottomRightRef.current.style.display = 'block'; (bottomRightRef.current as HTMLElement).style.opacity = '0'; }
 
       // Force layout, then compute destination rect
       const last = leftCard.getBoundingClientRect();
@@ -105,7 +94,29 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
 
       // Prepare transforms
       const inner = leftCard.querySelector('.about-left-inner') as HTMLElement | null;
-      gsap.set(leftCard, { transformOrigin: 'top left', x: dx, y: dy, width: first.width, height: first.height, boxShadow: '0 0 0 rgba(0,0,0,0)', borderRadius: 8 });
+      // Capture target visual styles for a seamless handoff
+      const targetStyles = getComputedStyle(leftCard);
+      const targetBg = targetStyles.backgroundColor;
+      // We intentionally avoid showing any border during the transition
+      const targetPaddingTop = targetStyles.paddingTop;
+      const targetPaddingRight = targetStyles.paddingRight;
+      const targetPaddingBottom = targetStyles.paddingBottom;
+      const targetPaddingLeft = targetStyles.paddingLeft;
+      const targetRadius = targetStyles.borderTopLeftRadius;
+
+      gsap.set(leftCard, {
+        transformOrigin: 'top left',
+        x: dx,
+        y: dy,
+        width: first.width,
+        height: first.height,
+        boxShadow: '0 0 0 rgba(0,0,0,0)',
+        borderRadius: targetRadius,
+        backgroundColor: targetBg,
+        border: 'none',
+        boxSizing: 'border-box',
+        padding: 0
+      });
       if (inner) gsap.set(inner, { transformOrigin: 'top left' });
 
       const tl = gsap.timeline({
@@ -114,12 +125,36 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
           animatingRef.current = false;
           gsap.set(leftCard, { clearProps: 'transform,width,height' });
           if (inner) gsap.set(inner, { clearProps: 'transform,filter' });
+          if (bioEl) (bioEl as HTMLElement).style.visibility = '';
+          if (bioGhost && bioGhost.parentNode) bioGhost.parentNode.removeChild(bioGhost);
         }
       });
 
-      // Container transition
-      tl.to(leftCard, { x: 0, y: 0, width: last.width, height: last.height, duration: 0.85 }, 0)
-        .to(leftCard, { boxShadow: '0 10px 28px rgba(0,0,0,0.25)', borderRadius: 12, duration: 0.6, ease: 'power2.out' }, '-=0.6');
+      // Container transition (background already set, keep constant to avoid flashes)
+      // Animate paddings independently so the visual growth is eased evenly
+      tl.to(leftCard, {
+        x: 0,
+        y: 0,
+        width: last.width,
+        height: last.height,
+        paddingTop: targetPaddingTop,
+        paddingRight: targetPaddingRight,
+        paddingBottom: targetPaddingBottom,
+        paddingLeft: targetPaddingLeft,
+        duration: 0.85,
+        ease: 'power3.inOut'
+      }, 0)
+      // Fade in the card just before the end to hide early growth
+      .to(leftCard, { opacity: 1, duration: 0.18, ease: 'power1.out' }, '-=0.18');
+
+      // Ghost morphs into the LEFT container's final tile and fades out
+      if (bioGhost && bioStartRect) {
+        const trg = last; // morph to the activated left card rect
+        // Smooth in the ghost to avoid an abrupt appearance
+        tl.fromTo(bioGhost, { opacity: 0.001, scale: 0.96, transformOrigin: 'top left' }, { opacity: 1, scale: 1, duration: 0.18, ease: 'power2.out' }, 0)
+          .to(bioGhost, { left: trg.left, top: trg.top, width: trg.width, height: trg.height, borderRadius: targetRadius, duration: 0.85, ease: 'power3.inOut' }, 0)
+          .to(bioGhost, { opacity: 0, duration: 0.2, ease: 'power2.out' }, '-=0.2');
+      }
       if (inner) tl.fromTo(inner, { filter: 'blur(10px)' }, { filter: 'blur(0px)', duration: 0.85, ease: 'power3.inOut' }, 0);
 
       const entering = [topRightRef.current, bottomRightRef.current].filter(Boolean) as HTMLElement[];
@@ -133,17 +168,22 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isActive = true }) => {
         '-=0.25'
       );
 
-      // Fade text back in near the end
-      const contentEls = [leftCard.querySelector('.profile-content'), leftCard.querySelector('.bio-section')].filter(Boolean) as Element[];
-      if (contentEls.length) {
-        tl.to(contentEls, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.06, ease: 'power2.out' }, '-=0.55');
-      }
+      // Fade text back in near the end; keep avatar grayscale
+      const textBackEls = [leftCard.querySelector('.profile-content'), leftCard.querySelector('.bio-section')].filter(Boolean) as Element[];
+      if (textBackEls.length) tl.to(textBackEls, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.06, ease: 'power2.out' }, '-=0.55');
+      if (avatarEl) tl.to(avatarEl, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, '<');
+      // Reveal the left card itself just at the end (ghost covers the motion)
+      tl.to(leftCard, { opacity: 1, duration: 0.12, ease: 'power1.out' }, '>-0.12');
+      // Remove transitioning class at the very end so tile BG appears AFTER motion
+      tl.add(() => { sectionRef.current?.classList.remove('is-transitioning'); });
 
       setActivated(true);
     };
 
-    if (textEls.length) {
-      gsap.to(textEls, { opacity: 0, y: 8, filter: 'blur(2px)', duration: 0.15, ease: 'power2.in', onComplete: startTransition });
+    if (textEls.length || avatarEl) {
+      const tlFade = gsap.timeline({ onComplete: startTransition });
+      if (textEls.length) tlFade.to(textEls, { opacity: 0, y: 8, filter: 'blur(2px)', duration: 0.15, ease: 'power2.in' }, 0);
+      if (avatarEl) tlFade.to(avatarEl, { opacity: 0, y: 8, duration: 0.15, ease: 'power2.in' }, 0);
     } else {
       startTransition();
     }

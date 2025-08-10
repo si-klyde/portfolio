@@ -377,6 +377,10 @@ h3 {
 .about-left-card {
     background: transparent; /* match background so it's invisible */
     border-radius: 12px;
+    overflow: hidden; /* avoid edge flashes during transform-based FLIP */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform, opacity;
 }
 
 /* Ensure the left panel groups the avatar, name and description together after activation */
@@ -388,6 +392,7 @@ h3 {
 
 /* After activation, make the name+avatar sit on a tile matching others */
 /* When activated, left side becomes one single tile containing avatar/name and description */
+/* Activated: left column becomes one unified tile */
 .about-activated .about-left-card {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-light);
@@ -395,11 +400,12 @@ h3 {
     padding: 1rem;
 }
 
-.about-activated .bio-section {
-    background: transparent;
-    border: none;
-    padding: 0;
-}
+/* Bio text sits inside the unified tile; no inner card */
+.about-activated .bio-section,
+.bio-section { background: transparent; border: none; padding: 0; }
+
+/* During transition, delay the tile background/border until motion completes */
+/* no special override during transition; the card itself fades in via JS */
 
 .about-right {
     display: grid;
@@ -415,6 +421,9 @@ h3 {
     border: 1px solid var(--border-light);
     display: none; /* start invisible; shown via animation */
     min-height: 180px;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform, opacity;
 }
 
 /* Ensure left card keeps its width while Flip computes positions to avoid snapping to far left */
@@ -426,6 +435,9 @@ h3 {
 .about-left-inner {
     transform-origin: top left;
     overflow: hidden; /* avoid text edge clipping during size tween */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform, opacity;
 }
 
 /* Final (activated) format for the left tile: image top, name/title below, then description */
@@ -435,6 +447,16 @@ h3 {
     gap: var(--about-gap); /* normalized spacing */
     margin-bottom: 0.5rem; /* reduce space before description */
 }
+
+/* Ensure left card adapts to light theme visuals */
+[data-theme="light"] .about-left-card {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+}
+[data-theme="light"] .about-left-card .bio-section { background-color: transparent; }
+[data-theme="light"] .about-left-card .profile-name { color: var(--text-primary); }
+[data-theme="light"] .about-left-card .profile-title { color: var(--text-muted); }
 
 .about-activated .about-left-card .profile-image {
     width: 112px;
