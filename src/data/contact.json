@@ -1,0 +1,10 @@
+{
+  "email": "hello@clyde.dev",
+  "socials": [
+    { "label": "GitHub", "url": "https://github.com/clyde" },
+    { "label": "LinkedIn", "url": "https://linkedin.com/in/clyde" },
+    { "label": "Twitter", "url": "https://twitter.com/clyde" }
+  ],
+  "location": "San Francisco, CA",
+  "availability": "Available for remote work worldwide"
+}

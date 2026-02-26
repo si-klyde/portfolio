@@ -1,0 +1,18 @@
+[
+  {
+    "category": "Frontend Development",
+    "tags": ["React", "Next.js", "TypeScript", "JavaScript", "GSAP", "CSS", "Tailwind"]
+  },
+  {
+    "category": "Backend & Database",
+    "tags": ["Node.js", "Python", "PostgreSQL", "MongoDB", "Redis", "GraphQL"]
+  },
+  {
+    "category": "Tools & Platforms",
+    "tags": ["Git", "Docker", "AWS", "Vercel", "Figma", "VS Code"]
+  },
+  {
+    "category": "Currently Learning",
+    "tags": ["Rust", "WebGL", "Three.js", "AI/ML"]
+  }
+]

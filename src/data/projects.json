@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Interactive Portfolio",
+    "discipline": "Web Development",
+    "description": "Animated personal site showcasing smooth transitions, a themed UI, and interactive motion design built for performance.",
+    "tech": ["React", "TypeScript", "Vite", "GSAP", "CSS"]
+  },
+  {
+    "title": "Task Management App",
+    "discipline": "Product Design",
+    "description": "Collaborative tasking with real‑time updates, drag‑and‑drop boards, and offline‑friendly UX.",
+    "tech": ["React", "Node.js", "PostgreSQL", "WebSockets"]
+  },
+  {
+    "title": "Data Visualization Dashboard",
+    "discipline": "Analytics",
+    "description": "High‑performance charts and filters for exploring large datasets with elegant interactions.",
+    "tech": ["TypeScript", "D3.js", "Python", "FastAPI"]
+  },
+  {
+    "title": "Cocolyze",
+    "discipline": "UX/UI Design",
+    "description": "Design system and component library focused on clarity, motion, and accessible patterns.",
+    "tech": ["Figma", "React", "Framer Motion"]
+  },
+  {
+    "title": "Les Indécis",
+    "discipline": "Branding",
+    "description": "Identity exploration and micro‑site with expressive typography and subtle motion.",
+    "tech": ["Branding", "CSS", "GSAP"]
+  },
+  {
+    "title": "Game of the Goose",
+    "discipline": "Game Design",
+    "description": "Classic board‑game mechanics reimagined for the web with responsive layouts and tactile feedback.",
+    "tech": ["TypeScript", "Canvas", "Audio"]
+  }
+]
