@@ -9,7 +9,7 @@ const TREE: Array<{ name: string; cmd: string }> = [
   { name: 'about', cmd: 'about' },
   { name: 'skills', cmd: 'skills' },
   { name: 'work', cmd: 'work' },
-  { name: 'blog', cmd: 'blog' },
+  { name: 'comments', cmd: 'comments' },
   { name: 'contact', cmd: 'contact' },
 ];
 

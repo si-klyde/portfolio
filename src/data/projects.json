@@ -1,38 +1,214 @@
 [
   {
-    "title": "Interactive Portfolio",
-    "discipline": "Web Development",
-    "description": "Animated personal site showcasing smooth transitions, a themed UI, and interactive motion design built for performance.",
-    "tech": ["React", "TypeScript", "Vite", "GSAP", "CSS"]
+    "title": "Hatch",
+    "discipline": "Web3 / Payments",
+    "description": "Privacy-preserving creator payment platform on Plasma L1. Commit-reveal cryptography, UUPS upgradeable escrow, 3-layer RBAC, 2FA, treasury dashboard.",
+    "tech": ["React", "Express", "Solidity", "Flask", "PostgreSQL", "Redis"],
+    "github": "growgami/hatch",
+    "defaultBranch": "staging",
+    "role": "Team Lead",
+    "features": [
+      "Commit-reveal privacy (AES-256-GCM)",
+      "UUPS upgradeable escrow contracts",
+      "3-layer RBAC (middleware + service + RLS)",
+      "Treasury dashboard with retry/reconciliation",
+      "Social verification (TikTok, Instagram, YouTube, Twitter)"
+    ],
+    "stats": { "stars": 0, "forks": 0, "watchers": 0 },
+    "languages": { "TypeScript": 2299845, "Python": 322960, "PLpgSQL": 114464, "Solidity": 74633, "JavaScript": 7352, "CSS": 4526, "HTML": 943 },
+    "files": [
+      { "name": "frontend/", "type": "dir", "msg": "feat: flat rate pricing model", "age": "Feb 2026" },
+      { "name": "backend/", "type": "dir", "msg": "fix: bump GAS_LIMIT_RELEASE to 250k", "age": "Feb 2026" },
+      { "name": "supabase/", "type": "dir", "msg": "feat: flat rate pricing model", "age": "Feb 2026" },
+      { "name": "docs/", "type": "dir", "msg": "feat: flat rate pricing model", "age": "Feb 2026" },
+      { "name": "specs/", "type": "dir", "msg": "fix: read fee from chain", "age": "Feb 2026" },
+      { "name": "nginx/", "type": "dir", "msg": "fix: rewrite nginx auth paths", "age": "Feb 2026" },
+      { "name": ".github/", "type": "dir", "msg": "fix: harden deploy script", "age": "Feb 2026" },
+      { "name": "schema.sql", "type": "file", "msg": "feat: campaign visibility gating", "age": "Feb 2026" },
+      { "name": "ecosystem.config.js", "type": "file", "msg": "ci: add test workflow", "age": "Feb 2026" },
+      { "name": "SECURITY_AUDIT_REPORT.md", "type": "file", "msg": "refactor: rename HatchEscrowV1", "age": "Jan 2026" },
+      { "name": "README.md", "type": "file", "msg": "docs: prettify README with badges", "age": "Feb 2026" }
+    ],
+    "readme": {
+      "tagline": "Privacy-preserving creator payment platform on Plasma L1",
+      "body": "Brands fund campaigns with USDT0, creators receive payments while keeping identity private via commit-reveal cryptography, with dispute resolution through bond-backed arbitration.",
+      "sections": [
+        { "heading": "Privacy System", "text": "Creator payments use commit-reveal cryptography. Payment proofs encrypted with AES-256-GCM. Creators reveal proofs on-demand for disputes without exposing identity during normal operation." },
+        { "heading": "Escrow & Payouts", "text": "Wallet-based funding with on-chain verification. Automated escrow releases on submission approval. Failed payout retry via treasury dashboard." },
+        { "heading": "Social Verification", "text": "Multi-platform creator verification via EnsembleData (TikTok, Instagram, YouTube) and Twitter API. Bio-based verification with async Redis queue." }
+      ],
+      "techTable": [
+        ["Frontend", "React 19 · Vite 7 · TypeScript 5.9 · TailwindCSS 4 · TanStack Query · Zustand"],
+        ["Wallet", "wagmi 2 · viem 2 · RainbowKit 2 (WalletConnect/Reown)"],
+        ["API Server", "Express.js · TypeScript · Supabase · Redis · Zod"],
+        ["Payment Server", "Flask · web3.py · Waitress · Redis"],
+        ["Smart Contracts", "Solidity 0.8.24 · Hardhat · OpenZeppelin (UUPS)"],
+        ["Analytics", "PostHog"]
+      ]
+    }
   },
   {
-    "title": "Task Management App",
-    "discipline": "Product Design",
-    "description": "Collaborative tasking with real‑time updates, drag‑and‑drop boards, and offline‑friendly UX.",
-    "tech": ["React", "Node.js", "PostgreSQL", "WebSockets"]
+    "title": "CreatorBook",
+    "discipline": "Analytics Platform",
+    "description": "Real-time influencer analytics — bulk import 1K+ social links, auto-enrich TikTok/Twitter metrics, WebSocket live progress, PDF reports, crypto billing.",
+    "tech": ["Next.js", "FastAPI", "PostgreSQL", "Redis", "WebSocket"],
+    "github": "growgami/creatorbook",
+    "features": [
+      "Bulk import 1K+ social links",
+      "Auto-enrich TikTok/Twitter metrics",
+      "WebSocket live progress via Redis pub/sub",
+      "PDF report generation",
+      "Crypto billing (ICP, ckBTC, ckETH, ckUSDC)"
+    ],
+    "stats": { "stars": 0, "forks": 0, "watchers": 0 },
+    "languages": { "TypeScript": 2052032, "Python": 338578, "PLpgSQL": 287006, "CSS": 18396, "Dockerfile": 4630, "JavaScript": 2434 },
+    "files": [
+      { "name": "frontend/", "type": "dir", "msg": "feat: sentry integration", "age": "Jan 2026" },
+      { "name": "backend/", "type": "dir", "msg": "feat: local image reference handling", "age": "Jan 2026" },
+      { "name": "relay/", "type": "dir", "msg": "feat: add Docker support", "age": "Dec 2025" },
+      { "name": "cpe/", "type": "dir", "msg": "feat: update CPE dependencies", "age": "Dec 2025" },
+      { "name": "supabase/", "type": "dir", "msg": "feat: local image reference handling", "age": "Jan 2026" },
+      { "name": "nginx/", "type": "dir", "msg": "feat: rate limiting config", "age": "Jan 2026" },
+      { "name": "docs/", "type": "dir", "msg": "feat: rate limiting config", "age": "Jan 2026" },
+      { "name": ".github/", "type": "dir", "msg": "add CI/CD workflows", "age": "Feb 2026" },
+      { "name": "docker-compose.yml", "type": "file", "msg": "feat: sentry integration", "age": "Jan 2026" },
+      { "name": "schema.sql", "type": "file", "msg": "feat: implement org role", "age": "Jan 2026" },
+      { "name": "ecosystem.config.js", "type": "file", "msg": "feat: enhance ecosystem config", "age": "Dec 2025" },
+      { "name": "README.md", "type": "file", "msg": "add docs, CLAUDE.md, AGENTS.md", "age": "Feb 2026" }
+    ],
+    "readme": {
+      "tagline": "Influencer analytics platform for TikTok and Twitter/X campaign tracking",
+      "body": "Bulk import up to 1,000 social links, auto-enrich metrics, generate PDF reports, and monitor enrichment progress in real time.",
+      "sections": [
+        { "heading": "Real-time Pipeline", "text": "ARQ workers dequeue enrichment jobs from Redis, fetch metrics from EnsembleData and TwitterAPI.io, then publish progress events via Redis pub/sub to WebSocket relay." },
+        { "heading": "Crypto Billing", "text": "ICPay SDK integration supporting ICP, ckBTC, ckETH, and ckUSDC payments for subscription and per-report billing." },
+        { "heading": "Monitoring", "text": "Sentry error tracking across frontend and backend. GSAP and Framer Motion for UI animations." }
+      ],
+      "techTable": [
+        ["Frontend", "Next.js 15 · React 18 · TypeScript · Tailwind 4 · shadcn/ui · Zustand · TanStack Query"],
+        ["Auth", "Better Auth (Twitter OAuth, Google OAuth)"],
+        ["Backend API", "FastAPI · Python 3.11+ · asyncpg · pydantic-settings"],
+        ["Job Queue", "ARQ (async Redis Queue)"],
+        ["Relay", "Node.js 20+ · TypeScript · ws · ioredis"],
+        ["Database", "PostgreSQL 17 (Supabase)"],
+        ["Infra", "Docker Compose · Nginx (reverse proxy + rate limiting)"]
+      ]
+    }
   },
   {
-    "title": "Data Visualization Dashboard",
-    "discipline": "Analytics",
-    "description": "High‑performance charts and filters for exploring large datasets with elegant interactions.",
-    "tech": ["TypeScript", "D3.js", "Python", "FastAPI"]
+    "title": "iPeer",
+    "discipline": "Full-Stack Web App",
+    "description": "Peer counseling platform — multi-role auth, appointment booking, video calls, email notifications. Capstone project, team lead.",
+    "tech": ["React", "Express", "Firebase", "Tailwind CSS"],
+    "github": "si-klyde/iPeer",
+    "role": "Team Lead",
+    "features": [
+      "Multi-role auth",
+      "Appointment booking",
+      "Video call integration",
+      "Email notifications"
+    ],
+    "stats": { "stars": 1, "forks": 2, "watchers": 1 },
+    "languages": { "JavaScript": 754769, "CSS": 26301, "HTML": 373 },
+    "files": [
+      { "name": "frontend/", "type": "dir", "msg": "feat: add time slot selection", "age": "Jan 2025" },
+      { "name": "backend/", "type": "dir", "msg": "feat: add email notifications", "age": "Jan 2025" },
+      { "name": ".vscode/", "type": "dir", "msg": "final therapy state", "age": "Dec 2024" },
+      { "name": "package.json", "type": "file", "msg": "final therapy state", "age": "Dec 2024" },
+      { "name": "README.md", "type": "file", "msg": "readme update", "age": "Oct 2024" }
+    ],
+    "readme": {
+      "tagline": "Capstone project repository",
+      "body": "Peer counseling platform with multi-role authentication, appointment scheduling, video call integration, and email notifications.",
+      "sections": [],
+      "techTable": []
+    }
   },
   {
-    "title": "Cocolyze",
-    "discipline": "UX/UI Design",
-    "description": "Design system and component library focused on clarity, motion, and accessible patterns.",
-    "tech": ["Figma", "React", "Framer Motion"]
+    "title": "Onboarding Agent",
+    "discipline": "AI / Automation",
+    "description": "AI Telegram bot for structured onboarding. Dual memory (PostgreSQL + Pinecone vectors), RAG retrieval, intent detection, Google Sheets export.",
+    "tech": ["Python", "OpenAI", "Pinecone", "PostgreSQL", "Docker"],
+    "github": "si-klyde/onboarding-agent",
+    "role": "Solo Developer",
+    "features": [
+      "Dual memory (PG + Pinecone)",
+      "RAG retrieval",
+      "Intent detection",
+      "Google Sheets export"
+    ],
+    "stats": { "stars": 0, "forks": 0, "watchers": 0 },
+    "languages": { "Python": 181442, "Dockerfile": 2507 },
+    "files": [
+      { "name": "src/", "type": "dir", "msg": "hotfix (input cleaning)", "age": "Apr 2025" },
+      { "name": "scripts/", "type": "dir", "msg": "updated prompt + doc upsert scripts", "age": "Apr 2025" },
+      { "name": "Dockerfile", "type": "file", "msg": "fixed for docker", "age": "Apr 2025" },
+      { "name": "docker-compose.yml", "type": "file", "msg": "okay na to pota", "age": "Apr 2025" },
+      { "name": "requirements.txt", "type": "file", "msg": "v1 deployment", "age": "Apr 2025" },
+      { "name": ".env.example", "type": "file", "msg": "v1 deployment", "age": "Apr 2025" },
+      { "name": "reset_db.py", "type": "file", "msg": "okay na to pota", "age": "Apr 2025" },
+      { "name": "instructions.md", "type": "file", "msg": "knowledge retrieval (rag + keyword)", "age": "Apr 2025" }
+    ]
   },
   {
-    "title": "Les Indécis",
-    "discipline": "Branding",
-    "description": "Identity exploration and micro‑site with expressive typography and subtle motion.",
-    "tech": ["Branding", "CSS", "GSAP"]
+    "title": "Meet Agent",
+    "discipline": "AI / Automation",
+    "description": "Bot that auto-joins Google Meet, transcribes audio in real-time, processes with AI, responds via TTS.",
+    "tech": ["Node.js", "Selenium", "Google Cloud STT/TTS", "OpenAI"],
+    "github": "collide-gg/meet_agent",
+    "role": "Solo Developer",
+    "features": [
+      "Automated Google Meet session joining",
+      "Real-time audio transcription",
+      "AI-powered conversation processing",
+      "Text-to-speech response capability"
+    ],
+    "stats": { "stars": 0, "forks": 0, "watchers": 1 },
+    "languages": { "JavaScript": 84726 },
+    "files": [
+      { "name": "src/", "type": "dir", "msg": "upload to github", "age": "Jan 2025" },
+      { "name": "tests/", "type": "dir", "msg": "upload to github", "age": "Jan 2025" },
+      { "name": "package.json", "type": "file", "msg": "upload to github", "age": "Jan 2025" },
+      { "name": "test-question.js", "type": "file", "msg": "upload to github", "age": "Jan 2025" },
+      { "name": "README.md", "type": "file", "msg": "update README", "age": "Jan 2025" },
+      { "name": "LICENSE", "type": "file", "msg": "upload to github", "age": "Jan 2025" },
+      { "name": ".env.example", "type": "file", "msg": "upload to github", "age": "Jan 2025" }
+    ],
+    "readme": {
+      "tagline": "A Node.js bot that can automatically join Google Meet sessions, process conversations using AI, and interact using text-to-speech capabilities.",
+      "body": null,
+      "sections": [
+        { "heading": "Audio Pipeline", "text": "Stereo Mix captures system audio → Google Cloud STT transcribes in real-time → OpenAI processes transcript → ElevenLabs or Google Cloud TTS generates spoken response." },
+        { "heading": "Browser Automation", "text": "Selenium automates Chrome to join Google Meet, handle permissions dialogs, and manage the meeting lifecycle." }
+      ],
+      "techTable": []
+    }
   },
   {
-    "title": "Game of the Goose",
-    "discipline": "Game Design",
-    "description": "Classic board‑game mechanics reimagined for the web with responsive layouts and tactile feedback.",
-    "tech": ["TypeScript", "Canvas", "Audio"]
+    "title": "Twitter List Scraper",
+    "discipline": "Developer Tooling",
+    "description": "Modular Python package for scraping tweets from Twitter lists. Parallel execution, CLI, structured JSON output.",
+    "tech": ["Python", "twitterapi.io", "ThreadPoolExecutor"],
+    "github": "si-klyde/twitterapi.io-list-scraper-module",
+    "role": "Solo Developer",
+    "features": [
+      "Parallel scraping with ThreadPoolExecutor",
+      "CLI interactive + env-based auth",
+      "Structured JSON output per list"
+    ],
+    "stats": { "stars": 0, "forks": 0, "watchers": 0 },
+    "languages": { "Python": 18625 },
+    "files": [
+      { "name": "twitter_list_scraper/", "type": "dir", "msg": "Add files via upload", "age": "May 2025" },
+      { "name": "cli_scrape_list.py", "type": "file", "msg": "Add CLI script for scraping", "age": "May 2025" },
+      { "name": "requirements.txt", "type": "file", "msg": "Add files via upload", "age": "May 2025" },
+      { "name": "README.md", "type": "file", "msg": "Update README.md", "age": "May 2025" }
+    ],
+    "readme": {
+      "tagline": "A modular, pluggable Python package for scraping tweets from Twitter lists using the twitterapi.io API.",
+      "body": "Designed to be easily integrated into any Python project. Fetch tweets from any public Twitter list with parallel scraping and structured JSON output.",
+      "sections": [],
+      "techTable": []
+    }
   }
 ]

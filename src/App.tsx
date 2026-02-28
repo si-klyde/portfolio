@@ -7,6 +7,7 @@ import Sidebar from './components/terminal/Sidebar';
 import WindowManager from './components/wm/WindowManager';
 import './terminal.css';
 import './wm.css';
+import './browser.css';
 
 gsap.registerPlugin(TextPlugin);
 

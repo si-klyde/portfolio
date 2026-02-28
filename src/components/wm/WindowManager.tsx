@@ -5,10 +5,9 @@ import TilingLayout from './TilingLayout';
 import KeybindHint from './KeybindHint';
 import AboutOutput from '../terminal/outputs/AboutOutput';
 import SkillsOutput from '../terminal/outputs/SkillsOutput';
-import WorkOutput from '../terminal/outputs/WorkOutput';
 import ContactOutput from '../terminal/outputs/ContactOutput';
-import BlogOutput from '../terminal/outputs/BlogOutput';
-import NeofetchOutput from '../terminal/outputs/NeofetchOutput';
+import GitHubBrowser from './GitHubBrowser';
+import ForumBrowser from './ForumBrowser';
 import type { WindowDef, WorkspaceState } from '../../types/wm';
 
 interface WindowManagerProps {
@@ -18,16 +17,15 @@ interface WindowManagerProps {
 const WINDOW_DEFS: WindowDef[] = [
   { id: 'about', title: 'About', content: <AboutOutput /> },
   { id: 'skills', title: 'Skills', content: <SkillsOutput /> },
-  { id: 'work', title: 'Work', content: <WorkOutput /> },
   { id: 'contact', title: 'Contact', content: <ContactOutput /> },
-  { id: 'blog', title: 'Blog', content: <BlogOutput /> },
-  { id: 'neofetch', title: 'Neofetch', content: <NeofetchOutput /> },
+  { id: 'projects', title: 'Projects', content: <GitHubBrowser /> },
+  { id: 'comments', title: 'Comments', content: <ForumBrowser /> },
 ];
 
 const INITIAL_WORKSPACES: WorkspaceState[] = [
-  { slots: ['about', 'skills', 'work', 'contact'], floating: [] },
-  { slots: ['blog', 'neofetch'], floating: [] },
-  { slots: [], floating: [] },
+  { slots: ['about', 'skills', 'contact'], floating: [] },
+  { slots: ['projects'], floating: [] },
+  { slots: ['comments'], floating: [] },
 ];
 
 function cloneWorkspaces(ws: WorkspaceState[]): WorkspaceState[] {
@@ -56,14 +54,26 @@ function getNeighborIndex(slots: string[], currentIdx: number, dir: 'left' | 'ri
 
 const FLOAT_STEP = 40;
 
+const STARTUP_BINDS = [
+  { key: '1/2/3', desc: 'switch workspace' },
+  { key: '←→↑↓', desc: 'move focus' },
+  { key: 'shift+←→↑↓', desc: 'swap window' },
+  { key: 'f', desc: 'toggle float' },
+  { key: '?', desc: 'keybind overlay' },
+  { key: 'h', desc: 'toggle this card' },
+  { key: 'Q', desc: 'exit wm' },
+];
+
 export default function WindowManager({ onExit }: WindowManagerProps) {
   const [activeWs, setActiveWs] = useState(0);
   const [workspaces, setWorkspaces] = useState<WorkspaceState[]>(cloneWorkspaces(INITIAL_WORKSPACES));
   const [focusedId, setFocusedId] = useState('about');
   const [showHints, setShowHints] = useState(false);
+  const [showStartupHints, setShowStartupHints] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const waybarRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<HTMLDivElement>(null);
+  const startupHintsRef = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
 
   const currentWs = workspaces[activeWs];
@@ -87,6 +97,26 @@ export default function WindowManager({ onExit }: WindowManagerProps) {
     if (hint) {
       tl.fromTo(hint, { opacity: 0 }, { opacity: 1, duration: 0.4 }, '-=0.2');
     }
+
+    tl.call(() => {
+      const el = startupHintsRef.current;
+      if (!el) return;
+      gsap.fromTo(el, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(1.4)' });
+    });
+  }, []);
+
+  // Animate startup hints in when toggled back on (skip initial — handled by enter timeline)
+  useEffect(() => {
+    if (!showStartupHints || !hasAnimated.current) return;
+    const el = startupHintsRef.current;
+    if (!el) return;
+    gsap.fromTo(el, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(1.4)' });
+  }, [showStartupHints]);
+
+  const dismissStartupHints = useCallback(() => {
+    const el = startupHintsRef.current;
+    if (!el) { setShowStartupHints(false); return; }
+    gsap.to(el, { opacity: 0, scale: 0.95, duration: 0.2, ease: 'power2.in', onComplete: () => setShowStartupHints(false) });
   }, []);
 
   const handleExit = useCallback(() => {
@@ -218,6 +248,12 @@ export default function WindowManager({ onExit }: WindowManagerProps) {
         if (e.key === '3') { switchWorkspace(2); return; }
       }
 
+      if (e.key === 'h' && !e.shiftKey && !e.ctrlKey) {
+        e.preventDefault();
+        if (showStartupHints) { dismissStartupHints(); } else { setShowStartupHints(true); }
+        return;
+      }
+
       if (e.key === 'f' && !e.shiftKey && !e.ctrlKey) { e.preventDefault(); toggleFloat(); return; }
 
       const arrowMap: Record<string, 'left' | 'right' | 'up' | 'down'> = {
@@ -232,7 +268,7 @@ export default function WindowManager({ onExit }: WindowManagerProps) {
 
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [handleExit, switchWorkspace, moveFocus, swapWindow, toggleFloat, showHints]);
+  }, [handleExit, switchWorkspace, moveFocus, swapWindow, toggleFloat, showHints, showStartupHints, dismissStartupHints]);
 
   return (
     <div className="wm" ref={containerRef}>
@@ -250,8 +286,24 @@ export default function WindowManager({ onExit }: WindowManagerProps) {
         />
       </div>
       <div className="wm-exit-hint">
-        alt + Q to exit &middot; ? for keybinds
+        Q to exit &middot; h for keybinds
       </div>
+      {showStartupHints && (
+        <div className="wm-startup-hints" ref={startupHintsRef} style={{ opacity: 0 }}>
+          <div className="wm-startup-hints-header">
+            <span className="wm-startup-hints-title">keybinds</span>
+            <button className="wm-startup-hints-close" onClick={dismissStartupHints}>&times;</button>
+          </div>
+          <div className="wm-startup-hints-grid">
+            {STARTUP_BINDS.map(b => (
+              <div key={b.key} className="keybind-row">
+                <span className="keybind-key">{b.key}</span>
+                <span className="keybind-desc">{b.desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {showHints && <KeybindHint onClose={() => setShowHints(false)} />}
     </div>
   );

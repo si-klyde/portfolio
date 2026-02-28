@@ -60,9 +60,15 @@ export default forwardRef<TerminalHandle, TerminalProps>(function Terminal({ onS
 
   useImperativeHandle(ref, () => ({ runCommand: handleCommand }), [handleCommand]);
 
+  const ranAbout = useRef(false);
+
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true);
-  }, []);
+    if (!ranAbout.current) {
+      ranAbout.current = true;
+      handleCommand('about');
+    }
+  }, [handleCommand]);
 
   return (
     <div className={`terminal${isTouch ? ' has-palette' : ''}`}>

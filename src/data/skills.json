@@ -1,18 +1,49 @@
 [
   {
-    "category": "Frontend Development",
-    "tags": ["React", "Next.js", "TypeScript", "JavaScript", "GSAP", "CSS", "Tailwind"]
+    "category": "Frontend",
+    "skills": [
+      { "name": "React", "usedIn": ["Hatch", "iPeer"] },
+      { "name": "Next.js", "usedIn": ["CreatorBook"] },
+      { "name": "TypeScript", "usedIn": ["CreatorBook", "iPeer", "this site"] },
+      { "name": "Tailwind CSS", "usedIn": ["iPeer"] },
+      { "name": "GSAP", "usedIn": ["this site"] },
+      { "name": "Vite", "usedIn": ["this site"] },
+      { "name": "Framer Motion", "usedIn": ["this site"] }
+    ]
   },
   {
     "category": "Backend & Database",
-    "tags": ["Node.js", "Python", "PostgreSQL", "MongoDB", "Redis", "GraphQL"]
+    "skills": [
+      { "name": "Node.js", "usedIn": ["Meet Agent", "Hatch"] },
+      { "name": "Express", "usedIn": ["iPeer", "Hatch"] },
+      { "name": "FastAPI", "usedIn": ["CreatorBook"] },
+      { "name": "Python", "usedIn": ["Onboarding Agent", "Meet Agent", "Twitter List Scraper"] },
+      { "name": "PostgreSQL", "usedIn": ["Hatch", "CreatorBook", "Onboarding Agent"] },
+      { "name": "Firebase", "usedIn": ["iPeer"] },
+      { "name": "Redis", "usedIn": ["Hatch", "CreatorBook"] },
+      { "name": "Supabase", "usedIn": ["this site"] }
+    ]
   },
   {
-    "category": "Tools & Platforms",
-    "tags": ["Git", "Docker", "AWS", "Vercel", "Figma", "VS Code"]
+    "category": "Web3 & AI",
+    "skills": [
+      { "name": "Solidity", "usedIn": ["Hatch"] },
+      { "name": "wagmi/viem", "usedIn": ["Hatch"] },
+      { "name": "OpenAI API", "usedIn": ["Onboarding Agent", "Meet Agent"] },
+      { "name": "Pinecone", "usedIn": ["Onboarding Agent"] },
+      { "name": "LangChain", "usedIn": ["Onboarding Agent"] },
+      { "name": "Google Cloud", "usedIn": ["Meet Agent"] }
+    ]
   },
   {
-    "category": "Currently Learning",
-    "tags": ["Rust", "WebGL", "Three.js", "AI/ML"]
+    "category": "Tools & Infra",
+    "skills": [
+      { "name": "Git", "usedIn": ["all projects"] },
+      { "name": "Docker", "usedIn": ["Onboarding Agent", "CreatorBook"] },
+      { "name": "Linux", "usedIn": ["all projects"] },
+      { "name": "Nginx", "usedIn": ["CreatorBook"] },
+      { "name": "PM2", "usedIn": ["CreatorBook"] },
+      { "name": "Hardhat", "usedIn": ["Hatch"] }
+    ]
   }
 ]

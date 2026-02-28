@@ -15,9 +15,9 @@ const INFO: Array<{ type: 'header' | 'sep' | 'info'; label?: string; value: stri
   { type: 'sep', value: '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500' },
   { type: 'info', label: 'os', value: 'portfolio.dev' },
   { type: 'info', label: 'shell', value: 'portfolio-sh' },
-  { type: 'info', label: 'stack', value: 'React \u00b7 TS \u00b7 GSAP' },
+  { type: 'info', label: 'stack', value: 'React \u00b7 TS \u00b7 Python \u00b7 Sol' },
   { type: 'info', label: 'wm', value: 'Hyprland' },
-  { type: 'info', label: 'uptime', value: 'since 2024' },
+  { type: 'info', label: 'uptime', value: 'since 2023' },
 ];
 
 const PALETTE_COLORS = [

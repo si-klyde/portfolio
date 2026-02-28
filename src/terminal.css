@@ -264,86 +264,170 @@ body::after {
 }
 
 /* Skills output */
-.skill-group {
-  margin-bottom: 8px;
+.skills-output {
+  white-space: pre;
 }
 
-.skill-group-name {
-  color: var(--accent);
+.skills-list-row {
+  display: flex;
+  gap: 4px;
 }
 
-.skill-tags-inline {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 4px 6px;
-  margin-top: 3px;
-  margin-left: 16px;
+.skills-list-index {
+  color: var(--text-dim);
+  min-width: 28px;
 }
 
-.skill-tag {
-  padding: 0 6px;
-  background: var(--tag-bg);
-  border: 1px solid var(--tag-border);
-  border-radius: 2px;
-  font-size: 14px;
-  color: var(--text);
-}
-
-/* Work output */
-.project-entry {
-  margin-bottom: 12px;
-  padding-left: 12px;
-  border-left: 2px solid #2a2a2a;
-}
-
-.project-title {
+.skills-list-name {
   color: var(--prompt-path);
 }
 
-.project-discipline {
+.skills-list-count {
+  color: var(--text-dim);
+}
+
+.skills-hint {
+  margin-top: 10px;
+  color: var(--text-dim);
+}
+
+.skills-hint-cmd {
+  color: var(--accent);
+}
+
+.skills-category {
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.skills-detail-row {
+  padding-left: 16px;
+}
+
+.skills-name {
+  color: var(--text);
+}
+
+.skills-used-label {
+  color: var(--text-dim);
+}
+
+.skills-used-value {
+  color: var(--green);
+}
+
+/* Work output — pacman -Qi style */
+.work-output {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.work-entry {
+  margin-bottom: 4px;
+}
+
+.work-header {
+  margin-bottom: 2px;
+}
+
+.work-index {
+  color: var(--text-dim);
+}
+
+.work-name {
+  color: var(--prompt-path);
+  font-weight: 500;
+}
+
+.work-field {
+  display: flex;
+  padding-left: 22px;
+}
+
+.work-label {
+  color: var(--accent);
+  flex-shrink: 0;
+  white-space: pre;
+}
+
+.work-value {
+  color: var(--text);
+}
+
+.work-stack {
+  color: var(--green);
+}
+
+.work-repo-link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: text-shadow 0.2s;
+}
+
+.work-repo-link:hover {
+  text-decoration: underline;
+  text-shadow: 0 0 8px rgba(87, 166, 255, 0.3);
+}
+
+.work-private {
   color: var(--text-dim);
   font-style: italic;
 }
 
-.project-desc {
-  color: var(--text);
-  margin: 2px 0;
+.work-list-row {
+  display: flex;
+  gap: 4px;
+  white-space: pre;
 }
 
-.project-tech {
+.work-list-index {
+  color: var(--text-dim);
+  min-width: 28px;
+}
+
+.work-list-name {
+  color: var(--prompt-path);
+}
+
+.work-list-type {
+  color: var(--text-dim);
+}
+
+.work-hint {
+  margin-top: 10px;
+  color: var(--text-dim);
+}
+
+.work-hint-cmd {
   color: var(--accent);
-  font-size: 13px;
 }
 
 /* Contact output */
-.contact-link {
+.contact-output {
+  white-space: pre;
+}
+
+.contact-row {
+  padding-left: 16px;
+}
+
+.contact-label {
   color: var(--accent);
+}
+
+.contact-value {
+  color: var(--text);
+}
+
+.contact-link {
+  color: var(--green);
   text-decoration: none;
   transition: text-shadow 0.2s;
 }
 
 .contact-link:hover {
   text-decoration: underline;
-  text-shadow: 0 0 8px rgba(87, 166, 255, 0.3);
-}
-
-/* Blog output */
-.blog-entry {
-  margin-bottom: 8px;
-  padding-left: 12px;
-  border-left: 2px solid #2a2a2a;
-}
-
-.blog-title {
-  color: var(--prompt-path);
-}
-
-.blog-date {
-  color: var(--text-dim);
-}
-
-.blog-excerpt {
-  color: var(--text);
+  text-shadow: 0 0 8px rgba(115, 218, 202, 0.3);
 }
 
 /* Neofetch */
