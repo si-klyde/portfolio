@@ -1,56 +1,49 @@
 # Portfolio
 
-> Interactive portfolio showcasing smooth animations and modern design
+A terminal + tiling window manager portfolio site. Type commands or navigate workspaces with keybinds.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-blue?style=flat-square)](https://si-klyde.github.io/portfolio)
-[![GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-green?style=flat-square)](https://si-klyde.github.io/portfolio)
+**[si-klyde.github.io/portfolio](https://si-klyde.github.io/portfolio)**
 
-## ⚡ Tech Stack
+---
 
-![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
-![GSAP](https://img.shields.io/badge/GSAP-88CE02?style=flat-square&logo=greensock&logoColor=white)
+## Stack
 
-## 🚀 Quick Start
+`React` `TypeScript` `Vite` `GSAP`
 
-```bash
-# Install dependencies
-npm install
+## Features
 
-# Start development server
-npm run dev
+**Terminal** — command-line interface with sidebar, autocomplete, and commands like `about`, `skills`, `experience`, `work`, `contact`
 
-# Build for production
-npm run build
+**Window Manager** — Hyprland-inspired tiling WM with 3 workspaces:
+- **ws1** — profile, experience, skills, contact (WM-native components, 2x2 grid)
+- **ws2** — GitHub project browser with repo detail pages
+- **ws3** — forum/comments browser
 
-# Deploy to GitHub Pages
-npm run deploy
-```
+**Keybinds** — `1/2/3` switch workspace, arrows move focus, `shift+arrows` swap windows, `f` float, `Q` exit
 
-## ✨ Features
-
-- **Smooth Animations** - GSAP-powered transitions and effects
-- **Responsive Design** - Works on all devices
-- **Interactive Navigation** - Keyboard and mouse support
-- **Text Scramble Effect** - Custom animated text transitions
-- **Modern Stack** - React, TypeScript, and Vite
-
-## 📁 Project Structure
+## Structure
 
 ```
 src/
-├── components/        # React components
-├── utils/            # Utility functions
-├── styles.css        # Global styles
-└── main.tsx          # App entry point
+├── components/
+│   ├── terminal/       # CLI, command outputs, sidebar
+│   └── wm/             # window manager, tiling, waybar, browsers
+├── commands/            # command registry
+├── data/                # JSON data (about, skills, experience, contact, projects)
+├── terminal.css
+├── wm.css
+└── browser.css
 ```
 
-## 🎨 Animations
+## Dev
 
-- Section slide transitions with bounce effect
-- Staggered content animations
-- Interactive text scrambling
-- Smooth hover effects
+```bash
+npm install
+npm run dev       # start dev server
+npm run build     # production build
+npm run deploy    # build + push to gh-pages
+```
 
-Built with ❤️ by [Clyde](https://github.com/si-klyde)
+---
+
+Built by [Clyde](https://github.com/si-klyde)
