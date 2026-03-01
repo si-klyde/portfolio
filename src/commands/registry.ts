@@ -4,6 +4,7 @@ import HelpOutput from '../components/terminal/outputs/HelpOutput';
 import AboutOutput from '../components/terminal/outputs/AboutOutput';
 import SkillsOutput from '../components/terminal/outputs/SkillsOutput';
 import WorkOutput from '../components/terminal/outputs/WorkOutput';
+import ExperienceOutput from '../components/terminal/outputs/ExperienceOutput';
 import ContactOutput from '../components/terminal/outputs/ContactOutput';
 import CommentsOutput from '../components/terminal/outputs/CommentsOutput';
 import NeofetchOutput from '../components/terminal/outputs/NeofetchOutput';
@@ -24,6 +25,10 @@ const commands: Record<string, CommandDef> = {
   work: {
     description: 'projects & work',
     handler: (args) => ({ output: createElement(WorkOutput, { query: args[0] }) }),
+  },
+  experience: {
+    description: 'work history',
+    handler: (args) => ({ output: createElement(ExperienceOutput, { query: args[0] }) }),
   },
   contact: {
     description: 'get in touch',
@@ -51,7 +56,7 @@ const easterEggs: Record<string, () => CommandResult> = {
   sudo: () => ({ output: createElement('span', { className: 'error-text' }, 'nice try. permission denied.') }),
   whoami: () => ({ output: createElement('span', null, 'visitor') }),
   neofetch: () => ({ output: createElement(NeofetchOutput) }),
-  ls: () => ({ output: createElement('span', null, 'about/  skills/  work/  contact/  comments/') }),
+  ls: () => ({ output: createElement('span', null, 'about/  experience/  skills/  work/  contact/  comments/') }),
   pwd: () => ({ output: createElement('span', null, '/home/visitor/portfolio') }),
   cd: () => ({ output: createElement('span', null, 'nowhere to go. you\'re already home.') }),
   exit: () => ({ output: createElement('span', null, 'there is no escape. type "help" instead.') }),

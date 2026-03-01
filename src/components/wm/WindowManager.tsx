@@ -3,9 +3,10 @@ import { gsap } from 'gsap';
 import Waybar from './Waybar';
 import TilingLayout from './TilingLayout';
 import KeybindHint from './KeybindHint';
-import AboutOutput from '../terminal/outputs/AboutOutput';
-import SkillsOutput from '../terminal/outputs/SkillsOutput';
-import ContactOutput from '../terminal/outputs/ContactOutput';
+import ProfileCard from './ProfileCard';
+import ExperiencePanel from './ExperiencePanel';
+import SkillsGrid from './SkillsGrid';
+import ContactCard from './ContactCard';
 import GitHubBrowser from './GitHubBrowser';
 import ForumBrowser from './ForumBrowser';
 import type { WindowDef, WorkspaceState } from '../../types/wm';
@@ -15,15 +16,16 @@ interface WindowManagerProps {
 }
 
 const WINDOW_DEFS: WindowDef[] = [
-  { id: 'about', title: 'About', content: <AboutOutput /> },
-  { id: 'skills', title: 'Skills', content: <SkillsOutput /> },
-  { id: 'contact', title: 'Contact', content: <ContactOutput /> },
+  { id: 'about', title: 'About', content: <ProfileCard /> },
+  { id: 'experience', title: 'Experience', content: <ExperiencePanel /> },
+  { id: 'skills', title: 'Skills', content: <SkillsGrid /> },
+  { id: 'contact', title: 'Contact', content: <ContactCard /> },
   { id: 'projects', title: 'Projects', content: <GitHubBrowser /> },
   { id: 'comments', title: 'Comments', content: <ForumBrowser /> },
 ];
 
 const INITIAL_WORKSPACES: WorkspaceState[] = [
-  { slots: ['about', 'skills', 'contact'], floating: [] },
+  { slots: ['about', 'experience', 'skills', 'contact'], floating: [] },
   { slots: ['projects'], floating: [] },
   { slots: ['comments'], floating: [] },
 ];

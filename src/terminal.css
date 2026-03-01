@@ -402,6 +402,79 @@ body::after {
   color: var(--accent);
 }
 
+/* Experience output */
+.exp-output {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.exp-entry {
+  margin-bottom: 4px;
+}
+
+.exp-header {
+  margin-bottom: 2px;
+}
+
+.exp-field {
+  display: flex;
+  padding-left: 22px;
+}
+
+.exp-label {
+  color: var(--accent);
+  flex-shrink: 0;
+  white-space: pre;
+}
+
+.exp-value {
+  color: var(--text);
+}
+
+.exp-sep {
+  padding-left: 22px;
+  color: var(--text-dim);
+  margin: 6px 0;
+}
+
+.exp-role {
+  margin-bottom: 8px;
+}
+
+.exp-role-title {
+  padding-left: 22px;
+  color: var(--green);
+  font-weight: 500;
+}
+
+.exp-bullet {
+  padding-left: 22px;
+  color: var(--text);
+}
+
+.exp-list-row {
+  display: flex;
+  gap: 4px;
+  white-space: pre;
+}
+
+.exp-list-index {
+  color: var(--text-dim);
+  min-width: 28px;
+}
+
+.exp-list-name {
+  color: var(--prompt-path);
+}
+
+.exp-list-role {
+  color: var(--green);
+}
+
+.exp-list-period {
+  color: var(--text-dim);
+}
+
 /* Contact output */
 .contact-output {
   white-space: pre;

@@ -1,0 +1,50 @@
+[
+  {
+    "company": "Growgami",
+    "type": "Contract",
+    "duration": "1 yr 5 mos",
+    "location": "Remote",
+    "roles": [
+      {
+        "title": "Senior Software Engineer",
+        "period": "Sep 2025 – Present",
+        "length": "7 mos",
+        "bullets": [
+          "Backend architecture for a Whop-like SaaS platform (scalability, security, onboarding)",
+          "TikTok automation pipelines for multi-account ops and content workflows, cut manual effort by 60%",
+          "Leading a small dev team, code reviews, sprint planning, progressive delivery",
+          "Server infra and deployments, high availability production ops"
+        ]
+      },
+      {
+        "title": "Junior Software Engineer",
+        "period": "Nov 2024 – Sep 2025",
+        "length": "11 mos",
+        "bullets": [
+          "AI newsletter pipeline that ingests 1,000+ daily tweets via Twitter API, cut manual research by 70%",
+          "Agentic onboarding Telegram bot with context-aware conversations",
+          "Multiple Telegram and Discord bots for internal automation",
+          "Server management and app hosting"
+        ]
+      }
+    ]
+  },
+  {
+    "company": "DOST V Regional Office",
+    "type": "Internship",
+    "duration": "4 mos",
+    "location": "Legaspi, Bicol Region, Philippines",
+    "roles": [
+      {
+        "title": "Back End Developer",
+        "period": "Feb 2025 – May 2025",
+        "length": "4 mos",
+        "bullets": [
+          "Backend for the RSTL Appointment Portal, handles requests across 3 labs",
+          "Backend-frontend integration, faster request handling",
+          "Automated appointment processing, 30% faster response times"
+        ]
+      }
+    ]
+  }
+]

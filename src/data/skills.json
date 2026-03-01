@@ -27,7 +27,6 @@
   {
     "category": "Web3 & AI",
     "skills": [
-      { "name": "Solidity", "usedIn": ["Hatch"] },
       { "name": "wagmi/viem", "usedIn": ["Hatch"] },
       { "name": "OpenAI API", "usedIn": ["Onboarding Agent", "Meet Agent"] },
       { "name": "Pinecone", "usedIn": ["Onboarding Agent"] },

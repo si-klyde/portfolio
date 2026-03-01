@@ -7,6 +7,7 @@ interface SidebarProps {
 
 const TREE: Array<{ name: string; cmd: string }> = [
   { name: 'about', cmd: 'about' },
+  { name: 'experience', cmd: 'experience' },
   { name: 'skills', cmd: 'skills' },
   { name: 'work', cmd: 'work' },
   { name: 'comments', cmd: 'comments' },

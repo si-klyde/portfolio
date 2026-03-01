@@ -90,7 +90,7 @@
 .wm-window {
   display: flex;
   flex-direction: column;
-  background: rgba(26, 26, 26, 0.85);
+  background: rgba(26, 26, 26, 0.65);
   border: 1px solid #333;
   border-radius: 8px;
   overflow: hidden;
@@ -319,6 +319,266 @@
 
 .wm-startup-hints .keybind-desc {
   font-size: 11px;
+}
+
+/* === WM-Native Components === */
+
+/* ProfileCard */
+.wn-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wn-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wn-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #333;
+  flex-shrink: 0;
+}
+
+.wn-profile-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wn-profile-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.wn-profile-title {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.wn-profile-bio {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.wn-profile-bio .wn-hl {
+  color: var(--accent);
+}
+
+.wn-profile-meta {
+  border: 1px solid #282828;
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wn-meta-row {
+  display: flex;
+  font-size: 12px;
+  gap: 8px;
+}
+
+.wn-meta-label {
+  color: var(--text-dim);
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.wn-meta-value {
+  color: var(--text);
+}
+
+.wn-profile-likes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wn-pill {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(40, 40, 40, 0.8);
+  border: 1px solid #3a3a3a;
+  color: var(--text);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.wn-pill:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* ExperiencePanel */
+.wn-experience {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wn-company {
+  border-left: 2px solid var(--accent);
+  padding-left: 12px;
+}
+
+.wn-company-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.wn-company-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.wn-badge {
+  font-size: 10px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: rgba(87, 166, 255, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(87, 166, 255, 0.2);
+}
+
+.wn-company-duration {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.wn-role {
+  margin-bottom: 10px;
+}
+
+.wn-role:last-child {
+  margin-bottom: 0;
+}
+
+.wn-role-title {
+  font-size: 13px;
+  color: #4ec990;
+  font-weight: 500;
+}
+
+.wn-role-period {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.wn-role-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wn-bullet {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  padding-left: 14px;
+  position: relative;
+}
+
+.wn-bullet::before {
+  content: '~';
+  position: absolute;
+  left: 0;
+  color: #444;
+}
+
+/* SkillsGrid */
+.wn-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wn-skills-category {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.wn-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ContactCard */
+.wn-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wn-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  text-decoration: none;
+  color: var(--text);
+  transition: color 0.15s;
+}
+
+a.wn-contact-row:hover {
+  color: var(--accent);
+}
+
+.wn-contact-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--accent);
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.wn-contact-label {
+  color: var(--text-dim);
+  min-width: 60px;
+}
+
+.wn-contact-value {
+  color: var(--text);
+}
+
+.wn-contact-divider {
+  border: none;
+  border-top: 1px solid #222;
+  margin: 4px 0;
+}
+
+.wn-status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ec990;
+  margin-right: 6px;
+  vertical-align: middle;
 }
 
 /* === Mobile === */

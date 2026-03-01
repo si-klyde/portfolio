@@ -12,7 +12,7 @@ interface TilingLayoutProps {
 }
 
 function getGridStyle(count: number): CSSProperties {
-  if (count >= 4) return { gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr 1fr' };
+  if (count >= 4) return { gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr' };
   if (count === 3) return { gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr' };
   if (count === 2) return { gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr' };
   if (count === 1) return { gridTemplateColumns: '1fr', gridTemplateRows: '1fr' };
@@ -20,9 +20,13 @@ function getGridStyle(count: number): CSSProperties {
 }
 
 function getSlotPlacement(slotIdx: number, count: number): CSSProperties {
-  if (count >= 3) {
-    // slot 0 = left col spanning all rows, rest = right col stacked
-    if (slotIdx === 0) return { gridColumn: 1, gridRow: `1 / ${count}` };
+  if (count >= 4) {
+    const col = (slotIdx % 2) + 1;
+    const row = Math.floor(slotIdx / 2) + 1;
+    return { gridColumn: col, gridRow: row };
+  }
+  if (count === 3) {
+    if (slotIdx === 0) return { gridColumn: 1, gridRow: '1 / 3' };
     return { gridColumn: 2, gridRow: slotIdx };
   }
   if (count === 2) {
