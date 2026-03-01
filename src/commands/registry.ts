@@ -35,8 +35,15 @@ const commands: Record<string, CommandDef> = {
     handler: () => ({ output: createElement(ContactOutput) }),
   },
   comments: {
-    description: 'visitor comments',
-    handler: () => ({ output: createElement(CommentsOutput) }),
+    description: 'guestbook',
+    handler: (args) => {
+      if (args[0]?.toLowerCase() === 'post') {
+        return { output: createElement(CommentsOutput, {
+          mode: 'post', name: args[1], message: args.slice(2).join(' ')
+        }) }
+      }
+      return { output: createElement(CommentsOutput, { mode: 'list' }) }
+    },
   },
   clear: {
     description: 'clear terminal',
@@ -77,8 +84,9 @@ const easterEggs: Record<string, () => CommandResult> = {
 export const COMMAND_NAMES = Object.keys(commands);
 
 export function executeCommand(input: string): { entry: HistoryEntry; shouldClear: boolean; startWm: boolean } {
-  const trimmed = input.trim().toLowerCase();
-  const [cmd, ...args] = trimmed.split(/\s+/);
+  const parts = input.trim().split(/\s+/);
+  const cmd = parts[0].toLowerCase();
+  const args = parts.slice(1);
   const id = crypto.randomUUID();
 
   if (cmd === 'clear') {

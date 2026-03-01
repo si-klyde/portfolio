@@ -547,6 +547,42 @@ body::after {
   letter-spacing: 3px;
 }
 
+/* Comments output */
+.comments-output {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.comment-entry {
+  padding: 2px 0 6px 0;
+}
+
+.comment-header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.comment-name {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.comment-time {
+  color: var(--text-dim);
+  font-size: 0.85em;
+}
+
+.comment-body {
+  color: var(--text);
+  padding-left: 16px;
+  opacity: 0.85;
+}
+
+.comment-success {
+  color: var(--green);
+}
+
 /* Sidebar */
 .sidebar {
   width: 300px;
