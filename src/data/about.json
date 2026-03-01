@@ -1,24 +1,22 @@
 {
   "name": "Clyde Baclao",
-  "title": "Developer",
+  "title": "Software Engineer",
   "bio": {
-    "text": "Passionate about creating meaningful digital experiences through clean code and thoughtful design. Currently exploring the intersection of technology and human creativity.",
-    "highlight": ["meaningful digital experiences", "clean code", "thoughtful design"]
+    "text": "Full-stack engineer at Growgami building web3 payment infra, analytics platforms, and AI agents. React/Next.js frontends, Python/Node backends.",
+    "highlight": ["web3 payment infra", "analytics platforms", "AI agents"]
   },
   "more": {
-    "paragraph": "I enjoy building fast, accessible interfaces and thoughtful interactions. My current focus is crafting small, reusable UI patterns with TypeScript, React and GSAP.",
-    "strengths": "TypeScript, React, GSAP",
-    "currently": "exploring rich micro‑interactions",
+    "paragraph": "Building payment infrastructure and AI-powered tools. If it can be automated, it probably should be.",
+    "strengths": "TypeScript, React, Python",
+    "currently": "building web3 payment infra @ Growgami",
     "values": "clarity, simplicity, craft"
   },
   "likes": [
-    "Open source communities",
-    "UI animation and micro‑interactions",
-    "Cloud infra and automation",
-    "Clean APIs and DX",
-    "Coffee rituals",
-    "Long runs"
+    "Linux ricing",
+    "AI agents",
+    "open source",
+    "automation",
+    "coffee rituals"
   ],
   "profileImage": "/portfolio/assets/profile.JPG"
 }
-
