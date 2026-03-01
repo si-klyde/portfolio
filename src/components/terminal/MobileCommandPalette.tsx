@@ -4,7 +4,7 @@ interface MobileCommandPaletteProps {
   onCommand: (command: string) => void;
 }
 
-const visibleCommands = COMMAND_NAMES.filter(c => c !== 'clear');
+const visibleCommands = COMMAND_NAMES.filter(c => c !== 'clear' && c !== 'startx');
 
 export default function MobileCommandPalette({ onCommand }: MobileCommandPaletteProps) {
   return (

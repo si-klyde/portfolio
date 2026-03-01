@@ -15,10 +15,14 @@ export default function CommandInput({ onSubmit, commandHistory, focusTrigger }:
   const [tabMatch, setTabMatch] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Focus input on mount and clicks
+  // Focus input on mount and clicks (skip palette/button clicks on mobile)
   useEffect(() => {
     inputRef.current?.focus();
-    const handleClick = () => inputRef.current?.focus();
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.mobile-palette') || target.closest('a') || target.closest('button')) return;
+      inputRef.current?.focus();
+    };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
   }, []);
@@ -127,10 +131,14 @@ export default function CommandInput({ onSubmit, commandHistory, focusTrigger }:
             onKeyDown={handleKeyDown}
             onSelect={syncCursor}
             onClick={syncCursor}
+            onFocus={() => {
+              setTimeout(() => inputRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 300);
+            }}
             spellCheck={false}
             autoCapitalize="off"
             autoComplete="off"
             autoCorrect="off"
+            enterKeyHint="send"
             aria-label="Terminal command input"
           />
           <div className="input-mirror" aria-hidden>

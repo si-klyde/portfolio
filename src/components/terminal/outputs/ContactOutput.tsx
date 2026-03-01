@@ -13,8 +13,8 @@ export default function ContactOutput() {
         <span className="contact-label">{pad('email')}</span>
         <a href={`mailto:${contact.email}`} className="contact-link">{contact.email}</a>
       </div>
-      {contact.socials.map(s => (
-        <div key={s.label} className="contact-row">
+      {contact.socials.map((s, i) => (
+        <div key={`${s.label}-${i}`} className="contact-row">
           <span className="contact-label">{pad(s.label.toLowerCase())}</span>
           <a href={s.url} target="_blank" rel="noopener noreferrer" className="contact-link">
             {s.url.replace(/^https?:\/\//, '')}

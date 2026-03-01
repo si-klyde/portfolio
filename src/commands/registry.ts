@@ -44,10 +44,18 @@ const commands: Record<string, CommandDef> = {
   },
   startx: {
     description: 'launch window manager',
-    handler: () => ({
-      output: createElement('span', null, 'starting Hyprland...'),
-      startWm: true,
-    }),
+    handler: () => {
+      const isMobile = window.innerWidth <= 700;
+      if (isMobile) {
+        return {
+          output: createElement('span', { className: 'error-text' }, 'startx: display too small for WM. use terminal commands instead.'),
+        };
+      }
+      return {
+        output: createElement('span', null, 'starting Hyprland...'),
+        startWm: true,
+      };
+    },
   },
 };
 
