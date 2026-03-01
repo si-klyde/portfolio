@@ -614,6 +614,12 @@ body::after {
   color: var(--text-dim);
 }
 
+.sb-status {
+  color: #73daca;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
 .sb-bio {
   color: var(--text);
   opacity: 0.6;

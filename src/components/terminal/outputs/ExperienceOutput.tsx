@@ -17,8 +17,6 @@ interface Experience {
 
 const typed = experience as Experience[];
 const LABEL_WIDTH = 11;
-const NAME_WIDTH = 22;
-const ROLE_WIDTH = 26;
 
 function pad(label: string) {
   return label.padEnd(LABEL_WIDTH);
@@ -54,30 +52,21 @@ function ExperienceDetail({ exp, i }: { exp: Experience; i: number }) {
   );
 }
 
-function ExperienceList() {
-  return (
-    <div className="exp-output">
-      {typed.map((exp, i) => (
-        <div key={exp.company} className="exp-list-row">
-          <span className="exp-list-index">[{i + 1}]</span>
-          <span className="exp-list-name">{exp.company.slice(0, NAME_WIDTH).padEnd(NAME_WIDTH)}</span>
-          <span className="exp-list-role">{exp.roles[0].title.padEnd(ROLE_WIDTH)}</span>
-          <span className="exp-list-period">{exp.roles[0].period}</span>
-        </div>
-      ))}
-      <div className="work-hint">
-        type <span className="work-hint-cmd">experience &lt;name|#&gt;</span> for details
-      </div>
-    </div>
-  );
-}
 
 interface ExperienceOutputProps {
   query?: string;
 }
 
 export default function ExperienceOutput({ query }: ExperienceOutputProps) {
-  if (!query) return <ExperienceList />;
+  if (!query) {
+    return (
+      <div className="exp-output">
+        {typed.map((exp, i) => (
+          <ExperienceDetail key={exp.company} exp={exp} i={i} />
+        ))}
+      </div>
+    );
+  }
 
   const num = parseInt(query, 10);
   const match = !isNaN(num)

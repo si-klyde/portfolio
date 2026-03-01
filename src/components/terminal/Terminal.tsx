@@ -40,7 +40,7 @@ export default forwardRef<TerminalHandle, TerminalProps>(function Terminal({ onS
   }, [wmSessionCount]);
   const isTouch = useIsTouchDevice();
 
-  const scrollRef = useAutoScroll<HTMLDivElement>([history, introComplete]);
+  const { ref: scrollRef, paused: scrollPaused } = useAutoScroll<HTMLDivElement>([history, introComplete]);
 
   const handleCommand = useCallback((input: string) => {
     const { entry, shouldClear, startWm } = executeCommand(input);
@@ -66,7 +66,20 @@ export default forwardRef<TerminalHandle, TerminalProps>(function Terminal({ onS
     setIntroComplete(true);
     if (!ranAbout.current) {
       ranAbout.current = true;
+      scrollPaused.current = true;
       handleCommand('about');
+      const queue = ['experience', 'skills', 'work', 'contact'];
+      queue.forEach((cmd, i) => {
+        setTimeout(() => {
+          handleCommand(cmd);
+          if (i === queue.length - 1) {
+            scrollPaused.current = false;
+            requestAnimationFrame(() => {
+              if (scrollRef.current) scrollRef.current.scrollTop = 0;
+            });
+          }
+        }, (i + 1) * 150);
+      });
     }
   }, [handleCommand]);
 

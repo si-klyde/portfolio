@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import aboutData from '../../data/about.json';
+import contactData from '../../data/contact.json';
 
 interface SidebarProps {
   onRunCommand: (cmd: string) => void;
@@ -99,6 +100,7 @@ export default function Sidebar({ onRunCommand }: SidebarProps) {
       <div className="sb-section">
         <div className="sb-name" ref={nameRef}>{aboutData.name}</div>
         <div className="sb-title">{aboutData.title}</div>
+        <div className="sb-status">{contactData.availability}</div>
         <div className="sb-bio">{aboutData.more.paragraph}</div>
       </div>
 

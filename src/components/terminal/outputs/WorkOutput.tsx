@@ -10,7 +10,6 @@ interface Project {
 
 const typed = projects as Project[];
 const LABEL_WIDTH = 9;
-const NAME_WIDTH = 20;
 
 function pad(label: string) {
   return label.padEnd(LABEL_WIDTH);
@@ -54,29 +53,20 @@ function ProjectDetail({ p, i }: { p: Project; i: number }) {
   );
 }
 
-function ProjectList() {
-  return (
-    <div className="work-output">
-      {typed.map((p, i) => (
-        <div key={p.title} className="work-list-row">
-          <span className="work-list-index">[{i + 1}]</span>
-          <span className="work-list-name">{p.title.padEnd(NAME_WIDTH)}</span>
-          <span className="work-list-type">{p.discipline}</span>
-        </div>
-      ))}
-      <div className="work-hint">
-        type <span className="work-hint-cmd">work &lt;name|#&gt;</span> for details
-      </div>
-    </div>
-  );
-}
-
 interface WorkOutputProps {
   query?: string;
 }
 
 export default function WorkOutput({ query }: WorkOutputProps) {
-  if (!query) return <ProjectList />;
+  if (!query) {
+    return (
+      <div className="work-output">
+        {typed.map((p, i) => (
+          <ProjectDetail key={p.title} p={p} i={i} />
+        ))}
+      </div>
+    );
+  }
 
   const num = parseInt(query, 10);
   const match = !isNaN(num)
